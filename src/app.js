@@ -2,7 +2,7 @@ import express from "express";
 // import cors from "cors";
 import config from "./config/config.js";
 import initServer from "./init/index.js";
-
+import usersRouter from "./routes/users.router.js";
 const app = express();
 const { server } = config;
 
@@ -21,7 +21,7 @@ app.use(express.json());
 // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // api 라우터 설정
-// app.use("/api", []);
+app.use("/api", [usersRouter]);
 
 initServer()
   .then(() => {
