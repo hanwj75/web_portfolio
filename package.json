@@ -19,7 +19,8 @@
   "main": "src/app.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon /src/app.js"
+    "dev": "nodemon /src/app.js",
+    "migrate": "node src/db/migration/createSchemas.js"
   },
   "repository": "https://github.com/hanwj75/web_portfolio.git",
   "author": "hanwj75 <wjws9608@gmail.com>",
