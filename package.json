@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mysql2": "^3.14.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.1.0",
+    "yarn": "^1.22.22"
+  },
+  "name": "web_portfolio",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon /src/app.js"
+  },
+  "repository": "https://github.com/hanwj75/web_portfolio.git",
+  "author": "hanwj75 <wjws9608@gmail.com>",
+  "license": "MIT"
+}
