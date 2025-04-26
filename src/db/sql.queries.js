@@ -5,7 +5,7 @@ export const SQL_QUERIES = {
   FIND_USER_BY_NAME: `SELECT * FROM Users WHERE userName = ?`,
   CREATE_USER: `INSERT INTO Users (id,email, password, userName) VALUES (?,?,?,?)`,
   UPDATE_USER_LOGIN: `UPDATE Users SET updatedAt = CURRENT_TIMESTAMP WHERE email = ?`,
-  DELETE_USER: `DELETE FROM Users WHERE email = ?`,
+  DELETE_USER: `DELETE FROM Users WHERE id = ?`,
 
   UPDATE_USER_NAME: `UPDATE Users SET userName = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
   UPDATE_USER_PASSWORD: `UPDATE Users SET password = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
