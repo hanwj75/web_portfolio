@@ -15,4 +15,8 @@ export const SQL_QUERIES = {
   FIND_PORTFOLIO_BY_UUID: `SELECT * FROM Portfolios WHERE id = ?`,
   DELETE_PORTFOLIO: `DELETE FROM Portfolios WHERE id = ?`,
   //Sections
+  CREATE_SECTION: `INSERT INTO Sections (id,portfolioId,type,content,sortOrder) VALUES(?,?,?,?,?)`,
+  UPDATE_SECTION_CONTENT: `UPDATE Sections SET content = ? WHERE id = ?`,
+  REORDER_SECTIONS: `UPDATE Sections SET sortOrder = ? WHERE id = ?`,
+  DELETE_SECTION: `DELETE FROM Sections WHERE id = ?`,
 };
