@@ -8,6 +8,7 @@ const envData = {
   server: {
     PORT: env.PORT || 3000,
     HOST: env.HOST || "127.0.0.1",
+    JWT: env.JWT || "JWT_SECRET_KEY",
   },
   database: {
     DB1_NAME: env.DB1_NAME || "DB_NAME",
