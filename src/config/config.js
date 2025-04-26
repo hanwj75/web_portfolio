@@ -5,6 +5,10 @@ const config = {
   server: {
     PORT: dotServer.PORT,
     HOST: dotServer.HOST,
+    JWT: dotServer.JWT,
+  },
+  development: {
+    NODE_ENV: envData.development.NODE_ENV,
   },
 };
 
