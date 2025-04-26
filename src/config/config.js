@@ -7,6 +7,9 @@ const config = {
     HOST: dotServer.HOST,
     JWT: dotServer.JWT,
   },
+  development: {
+    NODE_ENV: envData.development.NODE_ENV,
+  },
 };
 
 export default config;

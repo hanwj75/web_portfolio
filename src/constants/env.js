@@ -17,6 +17,9 @@ const envData = {
     DB1_HOST: env.DB1_HOST || "DB_HOST",
     DB1_PORT: env.DB1_PORT || "DB_PORT",
   },
+  development: {
+    NODE_ENV: env.NODE_ENV,
+  },
 };
 
 export default envData;
