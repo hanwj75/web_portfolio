@@ -3,6 +3,7 @@ import express from "express";
 import config from "./config/config.js";
 import initServer from "./init/index.js";
 import usersRouter from "./routes/users.router.js";
+import portfoliosRouter from "./routes/portfolios.router.js";
 const app = express();
 const { server } = config;
 
@@ -21,7 +22,7 @@ app.use(express.json());
 // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // api 라우터 설정
-app.use("/api", [usersRouter]);
+app.use("/api", [usersRouter, portfoliosRouter]);
 
 initServer()
   .then(() => {
