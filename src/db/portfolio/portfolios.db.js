@@ -3,6 +3,9 @@ import pools from "../database.js";
 import { SQL_QUERIES } from "../sql.queries.js";
 import { toCamelCase } from "../../utils/response/transformCase.js";
 
+/**
+ *  @desc 포트폴리오 조회, 생성, 포트폴리오와 섹션 상세 조회기능
+ */
 export const createPortfolio = async (userId, title, isPublic = false) => {
   try {
     const id = uuidv4();
@@ -22,12 +25,29 @@ export const createPortfolio = async (userId, title, isPublic = false) => {
   }
 };
 
+export const findUserPortfolios = async (userId) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.FIND_USER_PORTFOLIOS, [userId]);
+    return toCamelCase(rows);
+  } catch (err) {
+    console.error(`사용자의 모든 포트폴리오 조회 에러${err}`, err);
+  }
+};
+
 export const findPortfolioByUUID = async (id) => {
-  const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.FIND_PORTFOLIO_BY_UUID, [id]);
-  return toCamelCase(rows[0]);
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.FIND_PORTFOLIO_BY_UUID, [id]);
+    return toCamelCase(rows[0]);
+  } catch (err) {
+    console.error(`포트폴리오 조회 에러${err}`, err);
+  }
 };
 
 export const deletePortfolio = async (id) => {
-  const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DELETE_PORTFOLIO, [id]);
-  return rows.affectedRows > 0;
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DELETE_PORTFOLIO, [id]);
+    return rows.affectedRows > 0;
+  } catch (err) {
+    console.error(`포트폴리오 삭제 에러${err}`, err);
+  }
 };
