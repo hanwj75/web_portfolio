@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import pools from "../database.js";
 import { SQL_QUERIES } from "../sql.queries.js";
+import { toCamelCase } from "../../utils/response/transformCase.js";
 
 export const createSection = async (portfolioId, type, content, sortOrder) => {
   try {
@@ -24,11 +25,19 @@ export const createSection = async (portfolioId, type, content, sortOrder) => {
   }
 };
 
+export const findSectionByType = async (portfolioId, type) => {
+  const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.FIND_SECTION_BY_TYPE, [
+    portfolioId,
+    type,
+  ]);
+  return toCamelCase(rows[0]);
+};
+
 export const updateSectionContent = async (id, content) => {
   try {
     const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.UPDATE_SECTION_CONTENT, [
       JSON.stringify(content),
-      sectionId,
+      id,
     ]);
 
     return rows.affectedRows > 0;
