@@ -13,15 +13,16 @@ export const SQL_QUERIES = {
   //Portfolios
   CREATE_PORTFOLIO: `INSERT INTO Portfolios (id,userId,title,isPublic,publicUrlId) VALUES(?,?,?,?,?)`,
   FIND_PORTFOLIO_BY_UUID: `SELECT * FROM Portfolios WHERE id = ?`,
-  //사용자의 모든 포트폴리오 목록 조회회
+  //사용자의 모든 포트폴리오 목록 조회
   FIND_USER_PORTFOLIOS: `SELECT p.*, COUNT(s.id) as sectionCount FROM Portfolios p  LEFT JOIN Sections s ON p.id = s.portfolioId WHERE p.userId = ? GROUP BY p.id`,
 
   //특정 포트폴리오의 상세 정보 섹션 정보 모두 조회
   FIND_PORTFOLIO_WITH_SECTIONS: `SELECT p.*, s.id as sectionId, s.type, s.content, s.sortOrder FROM Portfolios p LEFT JOIN Sections s ON p.id = s.portfolioId WHERE p.id = ? AND p.userId = ?`,
-  //포트폴리오 삭제제
+  //포트폴리오 삭제
   DELETE_PORTFOLIO: `DELETE FROM Portfolios WHERE id = ?`,
 
   //Sections
+  FIND_SECTION_BY_TYPE: `SELECT * FROM Sections WHERE portfolioId = ? AND type = ?`,
   CREATE_SECTION: `INSERT INTO Sections (id,portfolioId,type,content,sortOrder) VALUES(?,?,?,?,?)`,
   UPDATE_SECTION_CONTENT: `UPDATE Sections SET content = ? WHERE id = ?`,
   REORDER_SECTIONS: `UPDATE Sections SET sortOrder = ? WHERE id = ?`,
