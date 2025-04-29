@@ -17,7 +17,7 @@ export const SQL_QUERIES = {
   FIND_USER_PORTFOLIOS: `SELECT p.*, COUNT(s.id) as sectionCount FROM Portfolios p  LEFT JOIN Sections s ON p.id = s.portfolioId WHERE p.userId = ? GROUP BY p.id`,
 
   //특정 포트폴리오의 상세 정보 섹션 정보 모두 조회
-  FIND_PORTFOLIO_WITH_SECTIONS: `SELECT p.*, s.id as sectionId, s.type, s.content, s.sortOrder FROM Portfolios p LEFT JOIN Sections s ON p.id = s.portfolioId WHERE p.id = ? AND p.userId = ?`,
+  FIND_PORTFOLIO_WITH_SECTIONS: `SELECT p.*, s.id as sectionId, s.type, s.content, s.sortOrder FROM Portfolios p LEFT JOIN Sections s ON p.id = s.portfolioId WHERE p.id = ? AND p.userId = ? ORDER BY s.sortOrder ASC`,
   //포트폴리오 삭제
   DELETE_PORTFOLIO: `DELETE FROM Portfolios WHERE id = ?`,
 
