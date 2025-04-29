@@ -10,7 +10,7 @@ const { server } = config;
 
 app.use(
   cors({
-    origin: ["http://34.59.2.83:3333", "http://localhost:3333", "http://127.0.0.1:3333"],
+    origin: ["http://158.179.174.153:3333", "http://localhost:3333"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],

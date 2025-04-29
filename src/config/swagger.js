@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://127.0.0.1:3333",
+        url: "http://158.179.174.153:3333",
       },
     ],
     components: {
