@@ -3,6 +3,7 @@ import jwtMiddleware from "../middlewares/auth.middleware.js";
 import {
   createPortfolio,
   findPortfolioByUUID,
+  findPortfolioWithSections,
   findUserPortfolios,
 } from "../db/portfolio/portfolios.db.js";
 import {
@@ -149,6 +150,25 @@ router.get("/portfolios", jwtMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * @desc 특정 포트폴리오 조회
+ */
+router.get("/portfolios/:portfolioId", jwtMiddleware, async (req, res, next) => {
+  try {
+    const { portfolioId } = req.params;
+    const { id: userId } = req.user;
+    const portfolio = await findPortfolioWithSections(portfolioId, userId);
+
+    if (!portfolio) {
+      return res.status(404).json({ message: "포트폴리오를 찾을 수 없습니다." });
+    }
+
+    return res.status(200).json({ message: "포트폴리오 조회 성공", data: portfolio });
+  } catch (err) {
+    console.error(`포트폴리오 상세 조회 에러${err}`, err);
+    return res.status(500).json({ message: "포트폴리오 상세 조회 에러" });
+  }
+});
 /**
  * @desc 포트폴리오 수정
  */
