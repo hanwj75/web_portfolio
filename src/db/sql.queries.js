@@ -20,6 +20,13 @@ export const SQL_QUERIES = {
   FIND_PORTFOLIO_WITH_SECTIONS: `SELECT p.*, s.id as sectionId, s.type, s.content, s.sortOrder FROM Portfolios p LEFT JOIN Sections s ON p.id = s.portfolioId WHERE p.id = ? AND p.userId = ? ORDER BY s.sortOrder ASC`,
   //포트폴리오 삭제
   DELETE_PORTFOLIO: `DELETE FROM Portfolios WHERE id = ?`,
+  //포트폴리오 배포 상태 업데이트
+  DEPLOY_PORTFOLIO: `UPDATE Portfolios SET isPublic = true, publicUrlId = ?,updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
+  // publicUrlId로 포트폴리오와 섹션 조회
+  FIND_PORTFOLIO_BY_PUBLIC_ID: `SELECT p.*, s.id as sectionId, s.type, s.content, s.sortOrder FROM Portfolios p LEFT JOIN Sections s ON p.id = s.portfolioId 
+WHERE p.publicUrlId = ? AND p.isPublic = true 
+ORDER BY s.sortOrder ASC
+`,
 
   //Sections
   FIND_SECTION_BY_TYPE: `SELECT * FROM Sections WHERE portfolioId = ? AND type = ?`,
