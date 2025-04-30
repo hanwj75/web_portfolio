@@ -84,6 +84,51 @@ export const findPortfolioByUUID = async (id) => {
   }
 };
 
+export const deployPortfolio = async (id, publicUrlId) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DEPLOY_PORTFOLIO, [publicUrlId, id]);
+    return rows.affectedRows > 0;
+  } catch (err) {
+    console.error(`포트폴리오 배포 상태 업데이트 에러${err}`, err);
+  }
+};
+
+export const findPortfolioByPublicUrlId = async (publicUrlId) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.FIND_PORTFOLIO_BY_PUBLIC_ID, [
+      publicUrlId,
+    ]);
+    if (!rows || rows.length === 0) return null;
+    //포트폴리오 기본 정보
+    const portfolio = {
+      portfolioId: rows[0].id,
+      title: rows[0].title,
+      createdAt: rows[0].createdAt,
+      updatedAt: rows[0].updatedAt,
+      sections: [],
+    };
+    //섹정 정보 추가
+    rows.forEach((row) => {
+      if (row.sectionId) {
+        let content = row.content;
+        if (typeof content === "string") {
+          try {
+            content = JSON.parse(content);
+          } catch (err) {}
+        }
+        portfolio.sections.push({
+          id: row.sectionId,
+          type: row.type,
+          content,
+          sortOrder: row.sortOrder,
+        });
+      }
+    });
+    return portfolio;
+  } catch (err) {
+    console.error(`배포된 포트폴리오 조회 에러${err}`, err);
+  }
+};
 export const deletePortfolio = async (id) => {
   try {
     const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DELETE_PORTFOLIO, [id]);
