@@ -27,6 +27,9 @@ const createSchemas = async () => {
     // PORTFOLIOS_DB에 portfolios 테이블 생성
     await executeSqlFile(pools.PORTFOLIOS_DB, path.join(sqlDir, "portfolios.sql"));
 
+    // PORTFOLIOS_DB에 categories 테이블 생성
+    await executeSqlFile(pools.PORTFOLIOS_DB, path.join(sqlDir, "categories.sql"));
+
     // PORTFOLIOS_DB에 sections 테이블 생성
     await executeSqlFile(pools.PORTFOLIOS_DB, path.join(sqlDir, "sections.sql"));
   } catch (err) {
