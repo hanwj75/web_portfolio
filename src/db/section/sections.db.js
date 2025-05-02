@@ -3,6 +3,10 @@ import pools from "../database.js";
 import { SQL_QUERIES } from "../sql.queries.js";
 import { toCamelCase } from "../../utils/response/transformCase.js";
 
+/**
+ * @desc 섹션 생성
+ */
+
 export const createSection = async (portfolioId, type, content, sortOrder) => {
   try {
     const id = uuidv4();
@@ -14,30 +18,37 @@ export const createSection = async (portfolioId, type, content, sortOrder) => {
 
     await pools.PORTFOLIOS_DB.query(SQL_QUERIES.CREATE_SECTION, [
       id,
-      portfolioId,
-      type,
+      categoryId,
       JSON.stringify(content),
       sortOrder,
     ]);
-    return { id, type, content, sortOrder };
+    return { id, content, sortOrder };
   } catch (err) {
     console.error(`섹션 생성 에러${err}`, err);
   }
 };
 
-export const findSectionByType = async (portfolioId, type) => {
-  const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.FIND_SECTION_BY_TYPE, [
-    portfolioId,
-    type,
+/**
+ * @desc 카테고리별 섹션 조회회
+ */
+
+export const findSectionsByCategory = async (categoryId) => {
+  const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.FIND_SECTIONS_BY_CATEGORY, [
+    categoryId,
   ]);
-  return toCamelCase(rows[0]);
+  return toCamelCase(rows);
 };
 
-export const updateSectionContent = async (id, content) => {
+/**
+ * @desc 섹션 내용 수정
+ */
+
+export const updateSectionContent = async (id, categoryId, content) => {
   try {
     const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.UPDATE_SECTION_CONTENT, [
       JSON.stringify(content),
       id,
+      categoryId,
     ]);
 
     return rows.affectedRows > 0;

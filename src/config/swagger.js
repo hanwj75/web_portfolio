@@ -29,7 +29,11 @@ const options = {
       },
     ],
   },
-  apis: ["./src/docs/users.swagger.js", "./src/docs/portfolios.swagger.js"],
+  apis: [
+    "./src/docs/users.swagger.js",
+    "./src/docs/portfolios.swagger.js",
+    "./src/docs/categories.swagger.js",
+  ],
 };
 
 const specs = swaggerJsdoc(options);
