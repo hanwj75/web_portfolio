@@ -6,11 +6,11 @@ import { toCamelCase } from "../../utils/response/transformCase.js";
 /**
  *  @desc 포트폴리오 조회, 생성, 포트폴리오와 섹션 상세 조회기능
  */
-export const createPortfolio = async (userId, title, isPublic = false) => {
+export const createPortfolio = async (userId, title) => {
   try {
     const id = uuidv4();
-    let publicUrlId = isPublic ? uuidv4().slice(0, 8) : null;
-
+    const publicUrlId = uuidv4().slice(0, 8);
+    const isPublic = false;
     await pools.PORTFOLIOS_DB.query(SQL_QUERIES.CREATE_PORTFOLIO, [
       id,
       userId,
