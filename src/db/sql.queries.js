@@ -51,15 +51,17 @@ ORDER BY s.sortOrder ASC
   DELETE_SECTION: `DELETE FROM Sections WHERE id = ? AND categoryId = ?`,
 
   //category
-  CREATE_CATEGORY: `INSERT INTO Categories (id,portfolioId,name,type) VALUES(?,?,?,?)`,
+  CREATE_CATEGORY: `INSERT INTO Categories (id,portfolioId,name,type,sortOrder) VALUES(?,?,?,?,?)`,
   //특정 포트폴리오의 모든 카테고리 조회
-  FIND_CATEGORIES_BY_PORTFOLIO: `SELECT * FROM Categories WHERE portfolioId = ?`,
+  FIND_CATEGORIES_BY_PORTFOLIO: `SELECT * FROM Categories WHERE portfolioId = ? ORDER BY sortOrder ASC`,
   //특정 카테고리 상세 조회
   FIND_CATEGORY_BY_ID: `SELECT * FROM Categories WHERE id = ? AND portfolioId = ?`,
   //카테고리 정보 수정
   UPDATE_CATEGORY: `UPDATE Categories SET name = ? , type = ? WHERE id = ? AND portfolioId = ? `,
   //카테고리 삭제
   DELETE_CATEGORY: `DELETE FROM Categories WHERE id = ? AND portfolioId = ? `,
+  //포트폴리오의 마지막 카테고리 순서 조회
+  FIND_LAST_CATEGORY_ORDER: `SELECT MAX(sortOrder) as maxOrder FROM Categories WHERE portfolioId = ?`,
 
   // 포트폴리오 전체 정보 조회 (포트폴리오에 대한 모든 정보 반환)
   FIND_PORTFOLIO_WITH_CATEGORIES_AND_SECTIONS: `SELECT p.*,c.id as categoryId,c.name as categoryName,c.type as categoryType,s.id as sectionId,s.content as sectionContent,s.sortOrder as sectionOrder 
