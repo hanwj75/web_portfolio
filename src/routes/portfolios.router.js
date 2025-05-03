@@ -1,12 +1,11 @@
 import express from "express";
-import jwtMiddleware from "../middlewares/auth.middleware.js";
+import { jwtMiddleware } from "../middlewares/auth.middleware.js";
 import { createPortfolio } from "./../db/portfolio/portfolios.db.js";
 
 const router = express.Router();
 
 /**
  * @desc 포트폴리오 생성
- * @header x-user-uuid: 유저 UUID JWT에서 추출
  * @body
  * {"title":"포트폴리오 제목"}
  */
