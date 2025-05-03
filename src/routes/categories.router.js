@@ -1,7 +1,6 @@
 import express from "express";
-import jwtMiddleware from "../middlewares/auth.middleware.js";
+import { jwtMiddleware } from "../middlewares/auth.middleware.js";
 import { createCategory, findCategoriesByPortfolio } from "../db/category/categories.db.js";
-import { toKebabCase } from "../utils/response/transformCase.js";
 
 const router = express.Router();
 
@@ -34,10 +33,13 @@ router.post("/categories", jwtMiddleware, async (req, res, next) => {
         categoryId: created.id,
         name: created.name,
         type: created.type,
-        slug: toKebabCase(created.name),
+        sortOrder: created.sortOrder,
       },
     });
   } catch (err) {
+    if (err.status === 409) {
+      return res.status(409).json({ message: err.message });
+    }
     console.error(`카테고리 생성 에러${err}`, err);
     return res.status(500).json({ message: "카테고리 생성 실패" });
   }
@@ -45,10 +47,31 @@ router.post("/categories", jwtMiddleware, async (req, res, next) => {
 
 /**
  * @desc 포트폴리오의 모든 카테고리 조회
- * @header x-portfolio-id: 포트폴리오 UUID
+ * @header Bearer 토큰
  */
 
 router.get("/categories", jwtMiddleware, async (req, res, next) => {
+  try {
+    const portfolioId = req.headers["x-portfolio-id"];
+    if (!portfolioId) {
+      return res.status(400).json({ message: "포트폴리오 ID가 필요합니다." });
+    }
+    const categories = await findCategoriesByPortfolio(portfolioId);
+
+    return res.status(200).json({
+      message: "카테고리 조회 완료",
+      data: categories,
+    });
+  } catch (err) {
+    console.error(`카테고리 조회 에러${err}`, err);
+    return res.status(500).json({ message: "카테고리 조회 실패" });
+  }
+});
+
+/**
+ * @desc 포트폴리오의 모든 카테고리 조회(비 로그인)
+ */
+router.get("/portfolios/categories", async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
     if (!portfolioId) {
