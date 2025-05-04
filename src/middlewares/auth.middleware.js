@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 
-const jwtMiddleware = (req, res, next) => {
+export const jwtMiddleware = (req, res, next) => {
   try {
     const { JWT } = config.server;
 
@@ -29,5 +29,3 @@ const jwtMiddleware = (req, res, next) => {
     return res.status(401).json({ message: "토큰 검증 실패" });
   }
 };
-
-export default jwtMiddleware;

@@ -11,7 +11,7 @@ import {
 import bcrypt from "bcrypt";
 import { validateSignUp } from "../middlewares/validate.middleware.js";
 import config from "../config/config.js";
-import jwtMiddleware from "../middlewares/auth.middleware.js";
+import { jwtMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
