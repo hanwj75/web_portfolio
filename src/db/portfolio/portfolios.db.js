@@ -8,11 +8,11 @@ import { toCamelCase } from "../../utils/response/transformCase.js";
  */
 export const createPortfolio = async (userId, title) => {
   try {
-    const id = "aaaa"; //테스트
+    const id = uuidv4();
     const publicUrlId = uuidv4().slice(0, 8);
     const isPublic = false;
     await pools.PORTFOLIOS_DB.query(SQL_QUERIES.CREATE_PORTFOLIO, [
-      id,
+      "aaaa",
       userId,
       title,
       isPublic,
