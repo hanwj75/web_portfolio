@@ -38,18 +38,17 @@ ORDER BY s.sortOrder ASC
 
   //Sections
   //카테고리별 섹션 조회
-  FIND_SECTIONS_BY_CATEGORY: `SELECT * FROM Sections WHERE categoryId = ? ORDER BY sortOrder ASC`,
+  FIND_SECTIONS_BY_CATEGORY: `SELECT * FROM Sections WHERE categoryId = ?`,
   // 특정 섹션 조회
   FIND_SECTION_BY_ID: `SELECT * FROM Sections WHERE id = ? AND categoryId = ?`,
   //섹션 생성
-  CREATE_SECTION: `INSERT INTO Sections (id,categoryId,content,sortOrder) VALUES(?,?,?,?)`,
+  CREATE_SECTION: `INSERT INTO Sections (id,categoryId,content) VALUES(?,?,?)`,
   //섹션 내용 수정
   UPDATE_SECTION_CONTENT: `UPDATE Sections SET content = ? WHERE id = ? AND categoryId = ?`,
   //섹션 순서 재정렬
   REORDER_SECTIONS: `UPDATE Sections SET sortOrder = ? WHERE id = ? AND categoryId = ?`,
   //섹션 삭제
   DELETE_SECTION: `DELETE FROM Sections WHERE id = ? AND categoryId = ?`,
-  //카테고리별 마지막 세션 sortOrder 조회회
 
   //category
   CREATE_CATEGORY: `INSERT INTO Categories (id,portfolioId,name,type,sortOrder) VALUES(?,?,?,?,?)`,
