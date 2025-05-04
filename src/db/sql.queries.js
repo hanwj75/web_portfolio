@@ -49,6 +49,7 @@ ORDER BY s.sortOrder ASC
   REORDER_SECTIONS: `UPDATE Sections SET sortOrder = ? WHERE id = ? AND categoryId = ?`,
   //섹션 삭제
   DELETE_SECTION: `DELETE FROM Sections WHERE id = ? AND categoryId = ?`,
+  //카테고리별 마지막 세션 sortOrder 조회회
 
   //category
   CREATE_CATEGORY: `INSERT INTO Categories (id,portfolioId,name,type,sortOrder) VALUES(?,?,?,?,?)`,

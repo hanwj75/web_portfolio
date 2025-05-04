@@ -5,16 +5,17 @@ import initServer from "./init/index.js";
 import usersRouter from "./routes/users.router.js";
 import portfoliosRouter from "./routes/portfolios.router.js";
 import categoriesRouter from "./routes/categories.router.js";
+import sectionsRouter from "./routes/sections.router.js";
 import { specs, swaggerUi } from "./config/swagger.js";
 const app = express();
 const { server } = config;
 
 app.use(
   cors({
-    origin: ["http://158.179.174.153:3333", "http://localhost:3333"],
+    origin: ["http://158.179.174.153:3333", "http://localhost:3333", "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept", "x-portfolio-id"],
   }),
 );
 
@@ -24,7 +25,7 @@ app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // api 라우터 설정
-app.use("/api", [usersRouter, portfoliosRouter, categoriesRouter]);
+app.use("/api", [usersRouter, portfoliosRouter, categoriesRouter, sectionsRouter]);
 
 initServer()
   .then(() => {

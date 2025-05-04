@@ -15,9 +15,9 @@ export const toCamelCase = (obj) => {
   return obj;
 };
 
-export const toKebabCase = (str) => {
-  return str
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-") // 영문, 숫자 외는 모두 하이픈으로 변환
-    .replace(/^-+|-+$/g, ""); // 앞뒤 하이픈 제거
-};
+// export const toKebabCase = (str) => {
+//   return str
+//     .toLowerCase()
+//     .replace(/[^a-z0-9]+/g, "-") // 영문, 숫자 외는 모두 하이픈으로 변환
+//     .replace(/^-+|-+$/g, ""); // 앞뒤 하이픈 제거
+// };
