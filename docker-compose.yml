@@ -2,7 +2,8 @@ services:
   api_server:
     image: hanwj75/myserver1:1
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       - PORT=3333
       - HOST=0.0.0.0
@@ -11,24 +12,28 @@ services:
       - DB1_USER=root
       - DB1_PASSWORD=1234
       - DB1_NAME=PORTFOLIOS_DB
-      - JWT="4e81a03e-adee-4885-a20b-1161979f2f9f"
+      - JWT=4e81a03e-adee-4885-a20b-1161979f2f9f
+      - NODE_ENV=development
     ports:
       - "3333:3333"
     networks:
       - apinetwork
-    restart: always # 오류 시 자동 재시작 추가
-    command: ["sh", "-c", "yarn migrate && node src/app.js"]
-
+    restart: always
+    command: ["sh", "-c", "sleep 15 && yarn migrate && yarn dev"]
+    volumes:
+      - ./src:/app/src
   mysql:
-    image: mysql:latest
+    image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: PORTFOLIOS_DB
-      MYSQL_USER: account
-      MYSQL_PASSWORD: 1234
-
-    ports:
-      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
     volumes:
       - mysql-data:/var/lib/mysql
     networks:

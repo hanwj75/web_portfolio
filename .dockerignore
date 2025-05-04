@@ -7,4 +7,3 @@ node_modules
 .development
 nginx
 .prettierrc
-docker-compose.yml
