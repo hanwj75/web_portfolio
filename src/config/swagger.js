@@ -33,6 +33,7 @@ const options = {
     "./src/docs/users.swagger.js",
     "./src/docs/portfolios.swagger.js",
     "./src/docs/categories.swagger.js",
+    "./src/docs/sections.swagger.js",
   ],
 };
 
