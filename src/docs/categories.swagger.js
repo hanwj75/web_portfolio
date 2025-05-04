@@ -22,7 +22,7 @@
  *           type: string
  *           description: 포트폴리오 UUID
  *
- * /categories:
+ * /api/categories:
  *   post:
  *     tags: [Categories]
  *     summary: 카테고리 생성
@@ -106,7 +106,7 @@
  *       500:
  *         description: 서버 에러
  *
- * /portfolios/categories:
+ * /api/portfolios/categories
  *   get:
  *     tags: [Categories]
  *     summary: 카테고리 목록 조회 (비로그인)
