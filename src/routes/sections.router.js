@@ -82,7 +82,6 @@ router.post("/sections", jwtMiddleware, async (req, res, next) => {
 
 /**
  * @desc 특정 세션 단일 조회
- * @header x-portfolio-id: 포트폴리오 UUID
  */
 
 router.get("/sections/:categoryId", jwtMiddleware, async (req, res, next) => {
@@ -101,38 +100,6 @@ router.get("/sections/:categoryId", jwtMiddleware, async (req, res, next) => {
     console.error(`섹션 단일 조회 에러${err}`, err);
     return res.status(500).json({ message: "섹션 단일 조회 실패" });
   }
-});
-
-/**
-/**
- * @desc 포트폴리오 관련 테스트 API
- * @header Authorization: Bearer aaaa
- */
-router.get("/test", async (req, res) => {
-  const { portfolioId } = req.headers["x-portfolio-id"];
-
-  return res.status(200).json({
-    message: "포트폴리오 테스트 성공",
-    data: {
-      portfolioId,
-      categoryId: "카테고리-UUID",
-      content: {
-        contentTitle: "UIUX Project",
-        description: "스스로 시작한 다양한 프로젝트를 모았습니다.",
-        projects: [
-          {
-            projectName: "프로젝트 이름",
-            logoImage: { src: "/asset/image/Logo.png" },
-            projectDescription: "프로젝트 설명...",
-            date: "2025.02 ~ 2025.07",
-            stacks: [{ stackName: "Figma", stackLogo: "/file.svg" }],
-            projectImage: { src: "/asset/image/Logo_Image.png" },
-            Participation: 54,
-          },
-        ],
-      },
-    },
-  });
 });
 
 export default router;
