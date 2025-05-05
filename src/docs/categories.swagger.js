@@ -106,7 +106,7 @@
  *       500:
  *         description: 서버 에러
  *
- * /api/portfolios/categories:
+ * /api/categories/all:
  *   get:
  *     tags: [Categories]
  *     summary: 카테고리 목록 조회 (비로그인)
