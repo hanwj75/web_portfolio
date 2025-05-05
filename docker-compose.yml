@@ -1,0 +1,62 @@
+# services:
+#   api_server:
+#     image: hanwj75/myserver1:1
+#     depends_on:
+#       mysql:
+#         condition: service_healthy
+#     environment:
+#       - PORT=3333
+#       - HOST=0.0.0.0
+#       - DB1_HOST=mysql
+#       - DB1_PORT=3306
+#       - DB1_USER=root
+#       - DB1_PASSWORD=1234
+#       - DB1_NAME=PORTFOLIOS_DB
+#       - JWT=4e81a03e-adee-4885-a20b-1161979f2f9f
+#       - NODE_ENV=development
+#     ports:
+#       - "3333:3333"
+#     networks:
+#       - apinetwork
+#     restart: always
+#     command: ["sh", "-c", "sleep 15 && yarn migrate && yarn dev"]
+#     volumes:
+#       - ./src:/app/src
+#   mysql:
+#     image: mysql:8.0
+#     environment:
+#       MYSQL_ROOT_PASSWORD: 1234
+#       MYSQL_DATABASE: PORTFOLIOS_DB
+#     command: --default-authentication-plugin=mysql_native_password
+#     healthcheck:
+#       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+#       interval: 3s
+#       timeout: 5s
+#       retries: 20
+#       start_period: 10s
+#     volumes:
+#       - mysql-data:/var/lib/mysql
+#     networks:
+#       - apinetwork
+
+# networks:
+#   apinetwork:
+
+# volumes:
+#   mysql-data:
+
+# 개발용 db
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: PORTFOLIOS_DB
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
