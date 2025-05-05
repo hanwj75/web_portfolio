@@ -12,7 +12,7 @@ const { server } = config;
 
 app.use(
   cors({
-    origin: ["http://158.179.174.153:3333", "http://localhost:3333", "http://localhost:3000"],
+    origin: ["http://43.203.72.138:3333", "http://localhost:3333", "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept", "x-portfolio-id"],

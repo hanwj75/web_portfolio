@@ -28,28 +28,31 @@ export const SQL_QUERIES = {
   `,
   //포트폴리오 삭제
   DELETE_PORTFOLIO: `DELETE FROM Portfolios WHERE id = ?`,
-  //포트폴리오 배포 상태 업데이트
-  DEPLOY_PORTFOLIO: `UPDATE Portfolios SET isPublic = true, publicUrlId = ?,updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
+  //포트폴리오 배포 상태 업데이트(공개)
+  DEPLOY_PORTFOLIO: `UPDATE Portfolios SET isPublic = true, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
+  //포트폴리오 배포 상태 업데이트(비공개)
+  UNDEPLOY_PORTFOLIO: `UPDATE Portfolios SET isPublic = false WHERE id = ? AND userId = ?`,
   // publicUrlId로 포트폴리오와 섹션 조회
-  FIND_PORTFOLIO_BY_PUBLIC_ID: `SELECT p.*, s.id as sectionId, s.type, s.content, s.sortOrder FROM Portfolios p LEFT JOIN Sections s ON p.id = s.portfolioId 
-WHERE p.publicUrlId = ? AND p.isPublic = true 
-ORDER BY s.sortOrder ASC
-`,
+  FIND_PORTFOLIO_BY_PUBLIC_ID: `SELECT p.*, c.id as categoryId, c.name as categoryName, c.type as categoryType, s.id as sectionId, s.content
+    FROM Portfolios p 
+    LEFT JOIN Categories c ON p.id = c.portfolioId
+    LEFT JOIN Sections s ON c.id = s.categoryId
+    WHERE p.publicUrlId = ? AND p.isPublic = true 
+    ORDER BY c.sortOrder ASC`,
 
   //Sections
   //카테고리별 섹션 조회
-  FIND_SECTIONS_BY_CATEGORY: `SELECT * FROM Sections WHERE categoryId = ? ORDER BY sortOrder ASC`,
+  FIND_SECTIONS_BY_CATEGORY: `SELECT * FROM Sections WHERE categoryId = ?`,
   // 특정 섹션 조회
   FIND_SECTION_BY_ID: `SELECT * FROM Sections WHERE id = ? AND categoryId = ?`,
   //섹션 생성
-  CREATE_SECTION: `INSERT INTO Sections (id,categoryId,content,sortOrder) VALUES(?,?,?,?)`,
+  CREATE_SECTION: `INSERT INTO Sections (id,categoryId,content) VALUES(?,?,?)`,
   //섹션 내용 수정
   UPDATE_SECTION_CONTENT: `UPDATE Sections SET content = ? WHERE id = ? AND categoryId = ?`,
   //섹션 순서 재정렬
   REORDER_SECTIONS: `UPDATE Sections SET sortOrder = ? WHERE id = ? AND categoryId = ?`,
   //섹션 삭제
   DELETE_SECTION: `DELETE FROM Sections WHERE id = ? AND categoryId = ?`,
-  //카테고리별 마지막 세션 sortOrder 조회회
 
   //category
   CREATE_CATEGORY: `INSERT INTO Categories (id,portfolioId,name,type,sortOrder) VALUES(?,?,?,?,?)`,

@@ -47,7 +47,6 @@ router.post("/categories", jwtMiddleware, async (req, res, next) => {
 
 /**
  * @desc 포트폴리오의 모든 카테고리 조회
- * @header Bearer 토큰
  */
 
 router.get("/categories", jwtMiddleware, async (req, res, next) => {
