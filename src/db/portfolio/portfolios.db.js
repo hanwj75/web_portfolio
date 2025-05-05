@@ -84,9 +84,18 @@ export const findPortfolioByUUID = async (id) => {
   }
 };
 
-export const deployPortfolio = async (id, publicUrlId) => {
+export const deployPortfolio = async (id, userId) => {
   try {
-    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DEPLOY_PORTFOLIO, [publicUrlId, id]);
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DEPLOY_PORTFOLIO, [id, userId]);
+    return rows.affectedRows > 0;
+  } catch (err) {
+    console.error(`포트폴리오 배포 상태 업데이트 에러${err}`, err);
+  }
+};
+
+export const undeployPortfolio = async (id, userId) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.UNDEPLOY_PORTFOLIO, [id, userId]);
     return rows.affectedRows > 0;
   } catch (err) {
     console.error(`포트폴리오 배포 상태 업데이트 에러${err}`, err);
@@ -99,36 +108,55 @@ export const findPortfolioByPublicUrlId = async (publicUrlId) => {
       publicUrlId,
     ]);
     if (!rows || rows.length === 0) return null;
+
     //포트폴리오 기본 정보
     const portfolio = {
       portfolioId: rows[0].id,
       title: rows[0].title,
       createdAt: rows[0].createdAt,
       updatedAt: rows[0].updatedAt,
-      sections: [],
+      categories: [],
     };
-    //섹정 정보 추가
+
+    //카테고리와 섹션 정보 추가
+    const categoryMap = new Map();
+
     rows.forEach((row) => {
-      if (row.sectionId) {
-        let content = row.content;
-        if (typeof content === "string") {
-          try {
-            content = JSON.parse(content);
-          } catch (err) {}
+      if (row.categoryId) {
+        if (!categoryMap.has(row.categoryId)) {
+          categoryMap.set(row.categoryId, {
+            id: row.categoryId,
+            name: row.categoryName,
+            type: row.categoryType,
+            sections: [],
+          });
         }
-        portfolio.sections.push({
-          id: row.sectionId,
-          type: row.type,
-          content,
-          sortOrder: row.sortOrder,
-        });
+
+        if (row.sectionId) {
+          let content = row.content;
+          if (typeof content === "string") {
+            try {
+              content = JSON.parse(content);
+            } catch (err) {}
+          }
+
+          const category = categoryMap.get(row.categoryId);
+          category.sections.push({
+            id: row.sectionId,
+            content,
+            sortOrder: row.sortOrder,
+          });
+        }
       }
     });
+
+    portfolio.categories = Array.from(categoryMap.values());
     return portfolio;
   } catch (err) {
     console.error(`배포된 포트폴리오 조회 에러${err}`, err);
   }
 };
+
 export const deletePortfolio = async (id) => {
   try {
     const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DELETE_PORTFOLIO, [id]);
