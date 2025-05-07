@@ -26,6 +26,9 @@ export const SQL_QUERIES = {
     WHERE p.id = ?
     ORDER BY c.name ASC, s.sortOrder ASC
   `,
+
+  //포트폴리오 수정
+  UPDATE_PORTFOLIO: `UPDATE Portfolios SET title = ?,updatedAt = CURRENT_TIMESTAMP WHERE id = ? `,
   //포트폴리오 삭제
   DELETE_PORTFOLIO: `DELETE FROM Portfolios WHERE id = ?`,
   //포트폴리오 배포 상태 업데이트(공개)
