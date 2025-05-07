@@ -109,3 +109,52 @@ export const reorderCategories = async (
     throw err;
   }
 };
+
+/**
+ * @desc 카테고리 삭제
+ */
+export const deleteCategory = async (categoryId, portfolioId) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DELETE_CATEGORY, [
+      categoryId,
+      portfolioId,
+    ]);
+    return rows.affectedRows > 0;
+  } catch (err) {
+    console.error(`카테고리 삭제 에러${err}`, err);
+    throw err;
+  }
+};
+
+/**
+ * @desc 카테고리 타입변경시 섹션삭제
+ */
+
+export const deleteSectionByCategoryId = async (id) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DELETE_SECTION, [id]);
+    return rows.affectedRows > 0;
+  } catch (err) {
+    console.error(`카테고리 타입변경시 섹션삭제 에러${err}`, err);
+    throw err;
+  }
+};
+
+/**
+ * @desc 카테고리 정보 업데이트
+ */
+
+export const updateCategory = async (id, portfolioId, name, type) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.UPDATE_CATEGORY, [
+      name,
+      type,
+      id,
+      portfolioId,
+    ]);
+    return rows.affectedRows > 0;
+  } catch (err) {
+    console.error(`카테고리 정보 업데이트 에러${err}`, err);
+    throw err;
+  }
+};
