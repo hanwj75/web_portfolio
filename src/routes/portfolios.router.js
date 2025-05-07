@@ -109,7 +109,6 @@ router.get("/portfolios", jwtMiddleware, async (req, res, next) => {
 });
 /**
  * @desc 포트폴리오 전체 조회(비 로그인)
- * @route GET /api/portfolios/:publicUrlId
  */
 
 router.get("/portfolios/:publicUrlId", async (req, res, next) => {
@@ -138,7 +137,6 @@ router.get("/portfolios/:publicUrlId", async (req, res, next) => {
 
 /**
  * @desc 포트폴리오 공개 설정
- * @route PATCH /api/portfolios/deploy
  */
 
 router.patch("/portfolios/deploy", jwtMiddleware, async (req, res, next) => {
@@ -172,7 +170,6 @@ router.patch("/portfolios/deploy", jwtMiddleware, async (req, res, next) => {
 
 /**
  * @desc 포트폴리오 비공개 설정
- * @route PATCH /api/portfolios/undeploy
  */
 
 router.patch("/portfolios/undeploy", jwtMiddleware, async (req, res, next) => {
