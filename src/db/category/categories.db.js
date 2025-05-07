@@ -68,3 +68,44 @@ export const findCategoryById = async (categoryId, portfolioId) => {
     throw err;
   }
 };
+
+/**
+ * @desc 카테고리 순서 재정렬
+ */
+
+export const reorderCategories = async (
+  portfolioId,
+  firstCategoryId,
+  firstOrder,
+  secondCategoryId,
+  secondOrder,
+) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.REORDER_CATEGORIES, [
+      firstCategoryId,
+      secondOrder,
+      secondCategoryId,
+      firstOrder,
+      firstCategoryId,
+      secondCategoryId,
+      portfolioId,
+    ]);
+
+    if (rows.affectedRows === 0) {
+      throw new Error("카테고리 순서 변경 실패");
+    }
+    return {
+      firstCategoryId: {
+        id: firstCategoryId,
+        newOrder: secondOrder,
+      },
+      secondCategoryId: {
+        id: secondCategoryId,
+        newOrder: firstOrder,
+      },
+    };
+  } catch (err) {
+    console.error(`카테고리 순서 재정렬 에러${err}`, err);
+    throw err;
+  }
+};
