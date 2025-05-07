@@ -52,7 +52,7 @@ export const SQL_QUERIES = {
   //섹션 순서 재정렬
   REORDER_SECTIONS: `UPDATE Sections SET sortOrder = ? WHERE id = ? AND categoryId = ?`,
   //섹션 삭제
-  DELETE_SECTION: `DELETE FROM Sections WHERE id = ? AND categoryId = ?`,
+  DELETE_SECTION: `DELETE FROM Sections WHERE categoryId = ?`,
 
   //category
   CREATE_CATEGORY: `INSERT INTO Categories (id,portfolioId,name,type,sortOrder) VALUES(?,?,?,?,?)`,
