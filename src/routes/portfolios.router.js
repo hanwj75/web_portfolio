@@ -5,6 +5,8 @@ import {
   findPortfolioByPublicUrlId,
   deployPortfolio,
   undeployPortfolio,
+  deletePortfolio,
+  findPortfolioByUUID,
 } from "./../db/portfolio/portfolios.db.js";
 
 const router = express.Router();
@@ -132,6 +134,44 @@ router.patch("/portfolios/undeploy", jwtMiddleware, async (req, res, next) => {
   } catch (err) {
     console.error(`포트폴리오 공개 설정 에러${err}`, err);
     return res.status(500).json({ message: "포트폴리오 공개 설정 실패" });
+  }
+});
+
+/**
+ * @desc 포트폴리오 삭제
+ */
+
+router.delete("/portfolios/:portfolioId", jwtMiddleware, async (req, res, next) => {
+  try {
+    const { portfolioId } = req.params;
+    const { id: userId } = req.user;
+    if (!portfolioId) {
+      return res.status(400).json({ message: "포트폴리오 ID가 필요합니다." });
+    }
+
+    //포트폴리오 존재 여부 OR 소유권 체크
+    const portfolio = await findPortfolioByUUID(portfolioId);
+    if (!portfolio) {
+      return res.status(404).json({ message: "포트폴리오를 찾을 수 없습니다." });
+    }
+
+    if (portfolio.userId !== userId) {
+      return res.status(403).json({ message: "권한이 없습니다." });
+    }
+
+    const deleted = await deletePortfolio(portfolioId);
+    if (!deleted) {
+      return res.status(400).json({ message: "포트폴리오 삭제 실패" });
+    }
+    return res.status(200).json({
+      message: "포트폴리오 삭제 완료",
+      data: {
+        portfolioId,
+      },
+    });
+  } catch (err) {
+    console.error(`포트폴리오 삭제 에러${err}`, err);
+    return res.status(500).json({ message: "포트폴리오 삭제 실패" });
   }
 });
 
