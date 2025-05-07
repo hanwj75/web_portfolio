@@ -2,8 +2,12 @@ import express from "express";
 import { jwtMiddleware } from "../middlewares/auth.middleware.js";
 import {
   createCategory,
+  deleteCategory,
+  deleteSectionByCategoryId,
   findCategoriesByPortfolio,
+  findCategoryById,
   reorderCategories,
+  updateCategory,
 } from "../db/category/categories.db.js";
 
 const router = express.Router();
@@ -135,4 +139,97 @@ router.patch("/categories/reorder", jwtMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * @desc 카테고리 수정
+ * @header x-portfolio-id: 포트폴리오 UUID
+ * @body
+ * {"name":"변경할 이름","type":"profile"||"project"}
+ */
+
+router.patch("/categories/:categoryId", jwtMiddleware, async (req, res, next) => {
+  try {
+    const portfolioId = req.headers["x-portfolio-id"];
+    const { categoryId } = req.params;
+    const { name, type } = req.body;
+    console.log("🚀 ~ router.patch ~ name:", name);
+    console.log("🚀 ~ router.patch ~ type:", type);
+
+    if (!portfolioId || !categoryId) {
+      return res.status(400).json({ message: "필수값 누락" });
+    }
+
+    //카테고리 존재 여부 확인
+    const category = await findCategoryById(categoryId, portfolioId);
+    console.log("🚀 ~ router.patch ~ category:", category.type);
+    console.log("🚀 ~ router.patch ~ category:", category.name);
+
+    if (!category) {
+      return res.status(404).json({ message: "카테고리 조회 실패" });
+    }
+
+    //변경할 값 설정정(name 이나 type이 제공되지않은 경우 기존 값 유지)
+    const newName = name || category.name;
+    const newType = type || category.type;
+
+    //type이 변경되는 경우에만 섹션 초기화
+    if (type && category.type !== type) {
+      await deleteSectionByCategoryId(categoryId);
+    }
+
+    //카테고리 정보 업데이트
+    const updated = await updateCategory(categoryId, portfolioId, newName, newType);
+    if (!updated) {
+      return res.status(400).json({ message: "카테고리 정보 업데이트 실패" });
+    }
+    return res.status(200).json({
+      message: "카테고리 정보 업데이트 완료",
+      data: {
+        categoryId,
+        name: newName,
+        type: newType,
+        isSectionReset: type && category.type !== type,
+      },
+    });
+  } catch (err) {
+    console.error(`카테고리 수정 에러${err}`, err);
+    return res.status(500).json({ message: "카테고리 수정 실패" });
+  }
+});
+
+/**
+ * @desc 카테고리 삭제
+ * @header x-portfolio-id: 포트폴리오 UUID
+ */
+
+router.delete("/categories/:categoryId", jwtMiddleware, async (req, res, next) => {
+  try {
+    const portfolioId = req.headers["x-portfolio-id"];
+    const { categoryId } = req.params;
+
+    if (!portfolioId || !categoryId) {
+      return res.status(400).json({ message: "필수값 누락" });
+    }
+
+    //카테고리 존재 여부 확인
+    const category = await findCategoryById(categoryId, portfolioId);
+    if (!category) {
+      return res.status(404).json({ message: "카테고리 조회 실패" });
+    }
+
+    //카테고리 삭제
+    const deleted = await deleteCategory(categoryId, portfolioId);
+    if (!deleted) {
+      return res.status(400).json({ message: "카테고리 삭제 실패" });
+    }
+    return res.status(200).json({
+      message: "카테고리 삭제 완료",
+      data: {
+        categoryId,
+      },
+    });
+  } catch (err) {
+    console.error(`카테고리 삭제 에러${err}`, err);
+    return res.status(500).json({ message: "카테고리 삭제 실패" });
+  }
+});
 export default router;
