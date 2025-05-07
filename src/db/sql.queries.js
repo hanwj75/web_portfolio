@@ -66,6 +66,13 @@ export const SQL_QUERIES = {
   DELETE_CATEGORY: `DELETE FROM Categories WHERE id = ? AND portfolioId = ? `,
   //포트폴리오의 마지막 카테고리 순서 조회
   FIND_LAST_CATEGORY_ORDER: `SELECT MAX(sortOrder) as maxOrder FROM Categories WHERE portfolioId = ?`,
+  //카테고리 순서 재정렬
+  REORDER_CATEGORIES: `UPDATE Categories 
+  SET sortOrder = CASE 
+      WHEN id = ? THEN ? 
+      WHEN id = ? THEN ? 
+  END
+  WHERE id IN (?, ?) AND portfolioId = ?`,
 
   // 포트폴리오 전체 정보 조회 (포트폴리오에 대한 모든 정보 반환)
   FIND_PORTFOLIO_WITH_CATEGORIES_AND_SECTIONS: `SELECT p.*,c.id as categoryId,c.name as categoryName,c.type as categoryType,s.id as sectionId,s.content as sectionContent,s.sortOrder as sectionOrder 
