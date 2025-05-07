@@ -78,7 +78,7 @@ router.get("/categories", jwtMiddleware, async (req, res, next) => {
 /**
  * @desc 포트폴리오의 모든 카테고리 조회(비 로그인)
  */
-router.get("/portfolios/categories", async (req, res, next) => {
+router.get("/categories/all", async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
     if (!portfolioId) {

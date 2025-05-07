@@ -99,7 +99,7 @@
 
 /**
  * @swagger
- * /api/portfolios/categories:
+ * /api/categories/all:
  *   get:
  *     summary: 포트폴리오의 모든 카테고리 조회 (비로그인)
  *     tags: [Categories]
