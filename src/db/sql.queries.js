@@ -16,7 +16,7 @@ export const SQL_QUERIES = {
   //포트폴리오 단일 조회
   FIND_PORTFOLIO_BY_UUID: `SELECT * FROM Portfolios WHERE id = ?`,
   //사용자의 모든 포트폴리오 목록 조회
-  FIND_USER_PORTFOLIOS: `SELECT p.*, COUNT(s.id) as sectionCount FROM Portfolios p  LEFT JOIN Sections s ON p.id = s.portfolioId WHERE p.userId = ? GROUP BY p.id`,
+  FIND_USER_PORTFOLIOS: `SELECT * FROM Portfolios WHERE userId = ?`,
 
   // 포트폴리오 전체 정보 조회 (포트폴리오에 대한 모든 정보 반환)
   FIND_PORTFOLIO_WITH_CATEGORIES_AND_SECTIONS: `SELECT p.*,c.id as categoryId,c.name as categoryName,c.type as categoryType,s.id as sectionId,s.content as sectionContent,s.sortOrder as sectionOrder 
