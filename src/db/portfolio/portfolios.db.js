@@ -22,6 +22,7 @@ export const createPortfolio = async (userId, title) => {
     return { id, publicUrlId };
   } catch (err) {
     console.error(`포트폴리오 생성 에러${err}`, err);
+    throw err;
   }
 };
 
@@ -31,6 +32,7 @@ export const findUserPortfolios = async (userId) => {
     return toCamelCase(rows);
   } catch (err) {
     console.error(`사용자의 모든 포트폴리오 조회 에러${err}`, err);
+    throw err;
   }
 };
 
@@ -72,6 +74,7 @@ export const findPortfolioWithSections = async (portfoliosId, userId) => {
     return portfolio;
   } catch (err) {
     console.error(`포트폴리오 상세 조회 에러${err}`, err);
+    throw err;
   }
 };
 
@@ -81,6 +84,7 @@ export const findPortfolioByUUID = async (id) => {
     return toCamelCase(rows[0]);
   } catch (err) {
     console.error(`포트폴리오ID 조회 에러${err}`, err);
+    throw err;
   }
 };
 
@@ -90,6 +94,7 @@ export const deployPortfolio = async (id, userId) => {
     return rows.affectedRows > 0;
   } catch (err) {
     console.error(`포트폴리오 배포 상태 업데이트 에러${err}`, err);
+    throw err;
   }
 };
 
@@ -99,6 +104,7 @@ export const undeployPortfolio = async (id, userId) => {
     return rows.affectedRows > 0;
   } catch (err) {
     console.error(`포트폴리오 배포 상태 업데이트 에러${err}`, err);
+    throw err;
   }
 };
 
@@ -154,6 +160,20 @@ export const findPortfolioByPublicUrlId = async (publicUrlId) => {
     return portfolio;
   } catch (err) {
     console.error(`배포된 포트폴리오 조회 에러${err}`, err);
+    throw err;
+  }
+};
+
+/**
+ * @desc 포트폴리오 수정
+ */
+export const updatePortfolio = async (id, title) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.UPDATE_PORTFOLIO, [title, id]);
+    return rows.affectedRows > 0;
+  } catch (err) {
+    console.error(`포트폴리오 수정 에러${err}`, err);
+    throw err;
   }
 };
 
@@ -163,5 +183,6 @@ export const deletePortfolio = async (id) => {
     return rows.affectedRows > 0;
   } catch (err) {
     console.error(`포트폴리오 삭제 에러${err}`, err);
+    throw err;
   }
 };
