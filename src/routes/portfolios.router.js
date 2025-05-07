@@ -7,6 +7,7 @@ import {
   undeployPortfolio,
   deletePortfolio,
   findPortfolioByUUID,
+  updatePortfolio,
 } from "./../db/portfolio/portfolios.db.js";
 
 const router = express.Router();
@@ -40,6 +41,50 @@ router.post("/portfolios", jwtMiddleware, async (req, res, next) => {
   } catch (err) {
     console.error(`포트폴리오 생성 에러${err}`, err);
     return res.status(500).json({ message: "포트폴리오 생성 실패" });
+  }
+});
+
+/**
+ * @desc 포트폴리오 수정
+ * @header x-portfolio-id
+ * @body
+ * {"title":"포트폴리오 제목"}
+ */
+
+router.patch("/portfolios", jwtMiddleware, async (req, res, next) => {
+  try {
+    const portfolioId = req.headers["x-portfolio-id"];
+    const { id: userId } = req.user;
+    const { title } = req.body;
+    if (!title) {
+      return res.status(400).json({ message: "수정할 이름을 입력해주세요." });
+    }
+
+    //포트폴리오 존재 여부 및 소유권 체크
+    const portfolio = await findPortfolioByUUID(portfolioId);
+    if (!portfolio) {
+      return res.status(404).json({ message: "포트폴리오를 찾을 수 없습니다." });
+    }
+
+    if (portfolio.userId !== userId) {
+      return res.status(403).json({ message: "권한이 없습니다." });
+    }
+    //포트폴리오 업데이트트
+    const updated = await updatePortfolio(portfolioId, title);
+    if (!updated) {
+      return res.status(404).json({ message: "포트폴리오 수정에 실패하였습니다." });
+    }
+
+    return res.status(200).json({
+      message: "포트폴리오 수정 완료",
+      data: {
+        portfolioId,
+        title,
+      },
+    });
+  } catch (err) {
+    console.error(`포트폴리오 수정 에러${err}`, err);
+    return res.status(500).json({ message: "포트폴리오 수정 실패" });
   }
 });
 
