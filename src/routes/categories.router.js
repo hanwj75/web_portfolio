@@ -151,8 +151,6 @@ router.patch("/categories/:categoryId", jwtMiddleware, async (req, res, next) =>
     const portfolioId = req.headers["x-portfolio-id"];
     const { categoryId } = req.params;
     const { name, type } = req.body;
-    console.log("🚀 ~ router.patch ~ name:", name);
-    console.log("🚀 ~ router.patch ~ type:", type);
 
     if (!portfolioId || !categoryId) {
       return res.status(400).json({ message: "필수값 누락" });
@@ -160,8 +158,6 @@ router.patch("/categories/:categoryId", jwtMiddleware, async (req, res, next) =>
 
     //카테고리 존재 여부 확인
     const category = await findCategoryById(categoryId, portfolioId);
-    console.log("🚀 ~ router.patch ~ category:", category.type);
-    console.log("🚀 ~ router.patch ~ category:", category.name);
 
     if (!category) {
       return res.status(404).json({ message: "카테고리 조회 실패" });
