@@ -8,6 +8,7 @@ import {
   deletePortfolio,
   findPortfolioByUUID,
   updatePortfolio,
+  findUserPortfolios,
 } from "./../db/portfolio/portfolios.db.js";
 
 const router = express.Router();
@@ -89,9 +90,28 @@ router.patch("/portfolios", jwtMiddleware, async (req, res, next) => {
 });
 
 /**
+ * @desc 현재 사용자 포트폴리오 목록 조회
+ */
+router.get("/portfolios", jwtMiddleware, async (req, res, next) => {
+  try {
+    const { id: userId } = req.user;
+
+    const portfolios = await findUserPortfolios(userId);
+
+    return res.status(200).json({
+      message: "포트폴리오 목록 조회 성공",
+      data: portfolios,
+    });
+  } catch (err) {
+    console.error(`포트폴리오 목록 조회 에러${err}`, err);
+    return res.status(500).json({ message: "포트폴리오 목록 조회 실패" });
+  }
+});
+/**
  * @desc 포트폴리오 전체 조회(비 로그인)
  * @route GET /api/portfolios/:publicUrlId
  */
+
 router.get("/portfolios/:publicUrlId", async (req, res, next) => {
   try {
     const { publicUrlId } = req.params;
@@ -120,6 +140,7 @@ router.get("/portfolios/:publicUrlId", async (req, res, next) => {
  * @desc 포트폴리오 공개 설정
  * @route PATCH /api/portfolios/deploy
  */
+
 router.patch("/portfolios/deploy", jwtMiddleware, async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
@@ -153,6 +174,7 @@ router.patch("/portfolios/deploy", jwtMiddleware, async (req, res, next) => {
  * @desc 포트폴리오 비공개 설정
  * @route PATCH /api/portfolios/undeploy
  */
+
 router.patch("/portfolios/undeploy", jwtMiddleware, async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
