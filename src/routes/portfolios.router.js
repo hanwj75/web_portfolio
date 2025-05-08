@@ -10,6 +10,7 @@ import {
   updatePortfolio,
   findUserPortfolios,
   findPortfolioByCategory,
+  findPortfolioSortOrder,
 } from "./../db/portfolio/portfolios.db.js";
 
 const router = express.Router();
@@ -19,7 +20,6 @@ const router = express.Router();
  * @body
  * {"title":"포트폴리오 제목"}
  */
-
 router.post("/portfolios", jwtMiddleware, async (req, res, next) => {
   try {
     const { id: userId } = req.user;
@@ -52,7 +52,6 @@ router.post("/portfolios", jwtMiddleware, async (req, res, next) => {
  * @body
  * {"title":"포트폴리오 제목"}
  */
-
 router.patch("/portfolios", jwtMiddleware, async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
@@ -108,10 +107,10 @@ router.get("/portfolios", jwtMiddleware, async (req, res, next) => {
     return res.status(500).json({ message: "포트폴리오 목록 조회 실패" });
   }
 });
+
 /**
  * @desc 포트폴리오 전체 조회(비 로그인)
  */
-
 router.get("/portfolios/:publicUrlId", async (req, res, next) => {
   try {
     const { publicUrlId } = req.params;
@@ -141,7 +140,6 @@ router.get("/portfolios/:publicUrlId", async (req, res, next) => {
  * @param publicUrlId : 포트폴리오 URL ID
  * @param categoryId : 카테고리 ID
  */
-
 router.get("/portfolios/:publicUrlId/categories/:categoryId", async (req, res, next) => {
   try {
     const { publicUrlId, categoryId } = req.params;
@@ -165,9 +163,37 @@ router.get("/portfolios/:publicUrlId/categories/:categoryId", async (req, res, n
 });
 
 /**
+ * @desc 포트폴리오 sortOrder 조회
+ * @param publicUrlId : 포트폴리오 URL ID
+ * @param sortOrder : 정렬 순서
+ */
+router.get("/portfolios/:publicUrlId/categories/order/:sortOrder", async (req, res, next) => {
+  try {
+    const { publicUrlId, sortOrder } = req.params;
+    const order = parseInt(sortOrder);
+
+    if (!publicUrlId || !order || order < 1) {
+      return res.status(400).json({ message: "포트폴리오 URL ID, 페이지 번호가 필요합니다." });
+    }
+
+    //카테고리와 섹션 정보 조회
+    const category = await findPortfolioSortOrder(publicUrlId, order);
+    if (!category) {
+      return res.status(404).json({ message: "카테고리를 찾을 수 없습니다." });
+    }
+    return res.status(200).json({
+      message: "포트폴리오 sortOrder 조회 성공",
+      data: category,
+    });
+  } catch (err) {
+    console.error(`포트폴리오 sortOrder 조회 에러${err}`, err);
+    return res.status(500).json({ message: "포트폴리오 sortOrder 조회 실패" });
+  }
+});
+
+/**
  * @desc 포트폴리오 공개 설정
  */
-
 router.patch("/portfolios/deploy", jwtMiddleware, async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
@@ -200,7 +226,6 @@ router.patch("/portfolios/deploy", jwtMiddleware, async (req, res, next) => {
 /**
  * @desc 포트폴리오 비공개 설정
  */
-
 router.patch("/portfolios/undeploy", jwtMiddleware, async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
@@ -233,7 +258,6 @@ router.patch("/portfolios/undeploy", jwtMiddleware, async (req, res, next) => {
 /**
  * @desc 포트폴리오 삭제
  */
-
 router.delete("/portfolios/:portfolioId", jwtMiddleware, async (req, res, next) => {
   try {
     const { portfolioId } = req.params;
