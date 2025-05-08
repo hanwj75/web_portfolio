@@ -133,7 +133,7 @@
  * @swagger
  * /api/portfolios/{publicUrlId}:
  *   get:
- *     summary: 포트폴리오 조회 (비로그인)
+ *     summary: 포트폴리오 전체 조회 (비로그인)
  *     tags: [Portfolios]
  *     parameters:
  *       - in: path
@@ -181,6 +181,44 @@
  *     responses:
  *       200:
  *         description: 포트폴리오 카테고리별 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/CategoryWithSections'
+ *       400:
+ *         description: 잘못된 요청
+ *       404:
+ *         description: 카테고리를 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
+ * /api/portfolios/{publicUrlId}/categories/order/{sortOrder}:
+ *   get:
+ *     summary: 포트폴리오 sortOrder 조회
+ *     tags: [Portfolios]
+ *     parameters:
+ *       - in: path
+ *         name: publicUrlId
+ *         schema:
+ *           type: string
+ *         required: true
+ *       - in: path
+ *         name: sortOrder
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: 포트폴리오 sortOrder 조회 성공
  *         content:
  *           application/json:
  *             schema:
