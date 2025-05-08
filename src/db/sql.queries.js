@@ -31,7 +31,14 @@ export const SQL_QUERIES = {
     WHERE p.id = ?
     ORDER BY c.name ASC, s.sortOrder ASC
   `,
-
+  //포트폴리오 sortOrder 조회
+  FIND_PORTFOLIO_CATEGORY_ORDER: `SELECT c.id as categoryId,c.name as categoryName,c.type as categoryType,c.sortOrder,s.id as sectionId, s.content as sectionContent 
+  FROM Portfolios p
+  LEFT JOIN Categories c ON p.id = c.portfolioId
+  LEFT JOIN Sections s ON c.id = s.categoryId
+  WHERE p.publicUrlId = ?
+  AND p.isPublic = true
+  AND c.sortOrder = ? `,
   //포트폴리오 수정
   UPDATE_PORTFOLIO: `UPDATE Portfolios SET title = ?,updatedAt = CURRENT_TIMESTAMP WHERE id = ? `,
   //포트폴리오 삭제
