@@ -17,8 +17,13 @@ export const SQL_QUERIES = {
   FIND_PORTFOLIO_BY_UUID: `SELECT * FROM Portfolios WHERE id = ?`,
   //사용자의 모든 포트폴리오 목록 조회
   FIND_USER_PORTFOLIOS: `SELECT * FROM Portfolios WHERE userId = ?`,
-
-  // 포트폴리오 전체 정보 조회 (포트폴리오에 대한 모든 정보 반환)
+  //포트폴리오 카테고리별 조회
+  FIND_PORTFOLIO_BY_CATEGORY: `SELECT p.*,c.id as categoryId, c.name as categoryName, c.type as categoryType, s.id as sectionId, s.content as sectionContent 
+  FROM Portfolios p
+  LEFT JOIN Categories c ON p.id = c.portfolioId
+  LEFT JOIN Sections s ON c.id = s.categoryId
+  WHERE p.publicUrlId = ? AND p.isPublic = true AND c.id = ? `,
+  //포트폴리오 전체 정보 조회 (포트폴리오에 대한 모든 정보 반환)
   FIND_PORTFOLIO_WITH_CATEGORIES_AND_SECTIONS: `SELECT p.*,c.id as categoryId,c.name as categoryName,c.type as categoryType,s.id as sectionId,s.content as sectionContent,s.sortOrder as sectionOrder 
     FROM Portfolios p
     LEFT JOIN Categories c ON p.id = c.portfolioId
