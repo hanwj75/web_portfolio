@@ -163,6 +163,43 @@
 
 /**
  * @swagger
+ * /api/portfolios/{publicUrlId}/categories/{categoryId}:
+ *   get:
+ *     summary: 포트폴리오 카테고리별 조회
+ *     tags: [Portfolios]
+ *     parameters:
+ *       - in: path
+ *         name: publicUrlId
+ *         schema:
+ *           type: string
+ *         required: true
+ *       - in: path
+ *         name: categoryId
+ *         schema:
+ *           type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: 포트폴리오 카테고리별 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/CategoryWithSections'
+ *       400:
+ *         description: 잘못된 요청
+ *       404:
+ *         description: 카테고리를 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
  * /api/portfolios/deploy:
  *   patch:
  *     summary: 포트폴리오 공개 설정
@@ -295,6 +332,44 @@
  *           type: string
  *         isPublic:
  *           type: boolean
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *     CategoryWithSections:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         portfolioId:
+ *           type: string
+ *         name:
+ *           type: string
+ *         type:
+ *           type: string
+ *         sortOrder:
+ *           type: number
+ *         sections:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Section'
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *     Section:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         categoryId:
+ *           type: string
+ *         content:
+ *           type: object
  *         createdAt:
  *           type: string
  *           format: date-time
