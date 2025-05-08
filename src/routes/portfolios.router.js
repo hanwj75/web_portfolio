@@ -9,6 +9,7 @@ import {
   findPortfolioByUUID,
   updatePortfolio,
   findUserPortfolios,
+  findPortfolioByCategory,
 } from "./../db/portfolio/portfolios.db.js";
 
 const router = express.Router();
@@ -132,6 +133,34 @@ router.get("/portfolios/:publicUrlId", async (req, res, next) => {
   } catch (err) {
     console.error(`포트폴리오 조회 에러${err}`, err);
     return res.status(500).json({ message: "포트폴리오 조회 실패" });
+  }
+});
+
+/**
+ * @desc 포트폴리오 카테고리별 조회
+ * @param publicUrlId : 포트폴리오 URL ID
+ * @param categoryId : 카테고리 ID
+ */
+
+router.get("/portfolios/:publicUrlId/categories/:categoryId", async (req, res, next) => {
+  try {
+    const { publicUrlId, categoryId } = req.params;
+    if (!publicUrlId || !categoryId) {
+      return res.status(400).json({ message: "포트폴리오 URL ID와 카테고리 ID가 필요합니다." });
+    }
+    //카테고리와 섹션 정보 조회
+    const category = await findPortfolioByCategory(publicUrlId, categoryId);
+    if (!category) {
+      return res.status(404).json({ message: "카테고리를 찾을 수 없습니다." });
+    }
+
+    return res.status(200).json({
+      message: "포트폴리오 카테고리별 조회 성공",
+      data: category,
+    });
+  } catch (err) {
+    console.error(`포트폴리오 카테고리별 조회 에러${err}`, err);
+    return res.status(500).json({ message: "포트폴리오 카테고리별 조회 실패" });
   }
 });
 
