@@ -202,6 +202,48 @@ export const findPortfolioByCategory = async (publicUrlId, categoryId) => {
     throw err;
   }
 };
+
+/**
+ * @desc 포트폴리오 sortOrder 조회
+ */
+export const findPortfolioSortOrder = async (publicUrlId, sortOrder) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.FIND_PORTFOLIO_CATEGORY_ORDER, [
+      publicUrlId,
+      sortOrder,
+    ]);
+    if (!rows || rows.length === 0) return null;
+
+    //카테고리와 섹션 정보
+    const category = {
+      id: rows[0].categoryId,
+      name: rows[0].categoryName,
+      type: rows[0].categoryType,
+      sortOrder: rows[0].sortOrder,
+      sections: [],
+    };
+    //섹션 정보 추가
+    rows.forEach((row) => {
+      if (row.sectionId) {
+        let content = row.sectionContent;
+        if (typeof content === "string") {
+          try {
+            content = JSON.parse(content);
+          } catch (err) {}
+        }
+        category.sections.push({
+          id: row.sectionId,
+          content,
+        });
+      }
+    });
+    return category;
+  } catch (err) {
+    console.error(`포트폴리오 sortOrder 조회 에러${err}`, err);
+    throw err;
+  }
+};
+
 /**
  * @desc 포트폴리오 수정
  */
