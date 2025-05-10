@@ -6,6 +6,7 @@ import {
   findSectionsByCategory,
   updateSectionContent,
 } from "../db/section/sections.db.js";
+import CustomError from "../utils/error/customError.js";
 
 const router = express.Router();
 
@@ -23,17 +24,17 @@ router.post("/sections", jwtMiddleware, async (req, res, next) => {
 
     //필수값 체크
     if (!portfolioId || !categoryId || !content) {
-      return res.status(400).json({ message: "필수값 누락." });
+      throw new CustomError("필수값 누락.", 400);
     }
     //카테고리 검증
     const category = await findCategoryById(categoryId, portfolioId);
     if (!category) {
-      return res.status(404).json({ message: "카테고리 존재하지 않습니다." });
+      throw new CustomError("카테고리 존재하지 않습니다.", 404);
     }
     //섹션 생성 제한
     const existSections = await findSectionsByCategory(categoryId);
     if (existSections.length > 0) {
-      return res.status(409).json({ message: "이미 섹션이 존재합니다." });
+      throw new CustomError("이미 섹션이 존재합니다.", 409);
     }
     //타입 검증
     switch (category.type) {
@@ -46,11 +47,11 @@ router.post("/sections", jwtMiddleware, async (req, res, next) => {
           !content.skills ||
           !content.aboutMe
         ) {
-          return res.status(400).json({ message: "profile 타입 필수값 누락" });
+          throw new CustomError("profile 타입 필수값 누락", 400);
         }
         // contact 내부 필수값 체크
         if (!content.contact.phone || !content.contact.email || !content.contact.birthDate) {
-          return res.status(400).json({ message: "contact 필수값 누락" });
+          throw new CustomError("contact 필수값 누락", 400);
         }
         // information, skills, aboutMe가 배열인지 체크
         if (
@@ -58,9 +59,7 @@ router.post("/sections", jwtMiddleware, async (req, res, next) => {
           !Array.isArray(content.skills) ||
           !Array.isArray(content.aboutMe)
         ) {
-          return res
-            .status(400)
-            .json({ message: "information, skills, aboutMe는 배열이어야 합니다." });
+          throw new CustomError("information, skills, aboutMe는 배열이어야 합니다.", 400);
         }
         break;
       case "project":
@@ -70,7 +69,7 @@ router.post("/sections", jwtMiddleware, async (req, res, next) => {
           !Array.isArray(content.projects) ||
           content.projects.length === 0
         ) {
-          return res.status(400).json({ message: "project 타입 필수값 누락" });
+          throw new CustomError("project 타입 필수값 누락", 400);
         }
         //projects 배열 내부 필수값 체크
         for (const projects of content.projects) {
@@ -83,12 +82,12 @@ router.post("/sections", jwtMiddleware, async (req, res, next) => {
             !projects.projectImage ||
             typeof projects.Participation !== "number"
           ) {
-            return res.status(400).json({ message: "projects 상세 필수값 누락락" });
+            throw new CustomError("projects 상세 필수값 누락락", 400);
           }
         }
         break;
       default:
-        return res.status(400).json({ message: "아직 지원하지 않는 카테고리 타입입니다." });
+        throw new CustomError("아직 지원하지 않는 카테고리 타입입니다.", 400);
     }
 
     //섹션 생성
@@ -102,8 +101,7 @@ router.post("/sections", jwtMiddleware, async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.error(`섹션 생성 에러${err}`, err);
-    return res.status(500).json({ message: "섹션 생성 실패" });
+    next(err);
   }
 });
 
@@ -115,7 +113,12 @@ router.get("/sections/:categoryId", jwtMiddleware, async (req, res, next) => {
   try {
     const { categoryId } = req.params;
     if (!categoryId) {
-      return res.status(400).json({ message: "카테고리를 찾을 수 없습니다." });
+      throw new CustomError("카테고리를 찾을 수 없습니다.", 400);
+    }
+    //카테고리 존재 여부 확인
+    const category = await findCategoryById(categoryId);
+    if (!category) {
+      throw new CustomError("카테고리를 찾을 수 없습니다.", 404);
     }
     const section = await findSectionsByCategory(categoryId);
 
@@ -124,8 +127,7 @@ router.get("/sections/:categoryId", jwtMiddleware, async (req, res, next) => {
       data: section,
     });
   } catch (err) {
-    console.error(`섹션 조회 에러${err}`, err);
-    return res.status(500).json({ message: "섹션 조회 실패" });
+    next(err);
   }
 });
 
@@ -143,19 +145,19 @@ router.patch("/sections/:sectionId", jwtMiddleware, async (req, res, next) => {
 
     //필수값 체크
     if (!portfolioId || !categoryId || !content) {
-      return res.status(400).json({ message: "필수값 누락" });
+      throw new CustomError("필수값 누락", 400);
     }
 
     //카테고리 검증
     const category = await findCategoryById(categoryId, portfolioId);
     if (!category) {
-      return res.status(404).json({ message: "카테고리 존재하지 않습니다." });
+      throw new CustomError("카테고리 존재하지 않습니다.", 404);
     }
     //섹션 존재 여부 확인(카테고리 내에서)
     const existSections = await findSectionsByCategory(categoryId);
     const section = existSections.find((s) => s.id === sectionId);
     if (!section) {
-      return res.status(404).json({ message: "섹션 존재하지 않습니다." });
+      throw new CustomError("섹션 존재하지 않습니다.", 404);
     }
 
     // 타입별 필수값 검증 (생성과 동일하게)
@@ -169,19 +171,17 @@ router.patch("/sections/:sectionId", jwtMiddleware, async (req, res, next) => {
           !content.skills ||
           !content.aboutMe
         ) {
-          return res.status(400).json({ message: "profile 타입 필수값 누락" });
+          throw new CustomError("profile 타입 필수값 누락", 400);
         }
         if (!content.contact.phone || !content.contact.email || !content.contact.birthDate) {
-          return res.status(400).json({ message: "contact 필수값 누락" });
+          throw new CustomError("contact 필수값 누락", 400);
         }
         if (
           !Array.isArray(content.information) ||
           !Array.isArray(content.skills) ||
           !Array.isArray(content.aboutMe)
         ) {
-          return res
-            .status(400)
-            .json({ message: "information, skills, aboutMe는 배열이어야 합니다." });
+          throw new CustomError("information, skills, aboutMe는 배열이어야 합니다.", 400);
         }
         break;
       case "project":
@@ -191,7 +191,7 @@ router.patch("/sections/:sectionId", jwtMiddleware, async (req, res, next) => {
           !Array.isArray(content.projects) ||
           content.projects.length === 0
         ) {
-          return res.status(400).json({ message: "project 타입 필수값 누락" });
+          throw new CustomError("project 타입 필수값 누락", 400);
         }
         for (const projects of content.projects) {
           if (
@@ -203,18 +203,18 @@ router.patch("/sections/:sectionId", jwtMiddleware, async (req, res, next) => {
             !projects.projectImage ||
             typeof projects.Participation !== "number"
           ) {
-            return res.status(400).json({ message: "projects 상세 필수값 누락락" });
+            throw new CustomError("projects 상세 필수값 누락락", 400);
           }
         }
         break;
       default:
-        return res.status(400).json({ message: "아직 지원하지 않는 카테고리 타입입니다." });
+        throw new CustomError("아직 지원하지 않는 카테고리 타입입니다.", 400);
     }
 
     //섹션 업데이트
     const updated = await updateSectionContent(sectionId, categoryId, content);
     if (!updated) {
-      return res.status(400).json({ message: "섹션 업데이트 실패" });
+      throw new CustomError("섹션 업데이트 실패", 400);
     }
 
     return res.status(200).json({
@@ -226,8 +226,7 @@ router.patch("/sections/:sectionId", jwtMiddleware, async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.error(`섹션 수정 에러${err}`, err);
-    return res.status(500).json({ message: "섹션 수정 실패" });
+    next(err);
   }
 });
 
