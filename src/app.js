@@ -7,6 +7,7 @@ import portfoliosRouter from "./routes/portfolios.router.js";
 import categoriesRouter from "./routes/categories.router.js";
 import sectionsRouter from "./routes/sections.router.js";
 import { specs, swaggerUi } from "./config/swagger.js";
+import { errorHandler } from "./middlewares/error.middleware.js";
 const app = express();
 const { server } = config;
 
@@ -27,6 +28,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 // api 라우터 설정
 app.use("/api", [usersRouter, portfoliosRouter, categoriesRouter, sectionsRouter]);
 
+//에러처리
+app.use(errorHandler);
 initServer()
   .then(() => {
     app.listen(server.PORT, server.HOST, () => {

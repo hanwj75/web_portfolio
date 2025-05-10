@@ -9,6 +9,7 @@ import {
   reorderCategories,
   updateCategory,
 } from "../db/category/categories.db.js";
+import CustomError from "../utils/error/customError.js";
 
 const router = express.Router();
 
@@ -26,10 +27,10 @@ router.post("/categories", jwtMiddleware, async (req, res, next) => {
     const { name, type } = req.body;
 
     if (!portfolioId) {
-      return res.status(400).json({ message: "포트폴리오 ID가 필요합니다." });
+      throw new CustomError("포트폴리오 ID가 필요합니다.", 400);
     }
     if (!name || !type) {
-      return res.status(400).json({ message: "카테고리 이름 OR 타입을 입력해주세요." });
+      throw new CustomError("카테고리 이름 OR 타입을 입력해주세요.", 400);
     }
 
     //카테고리 생성
@@ -45,11 +46,7 @@ router.post("/categories", jwtMiddleware, async (req, res, next) => {
       },
     });
   } catch (err) {
-    if (err.status === 409) {
-      return res.status(409).json({ message: err.message });
-    }
-    console.error(`카테고리 생성 에러${err}`, err);
-    return res.status(500).json({ message: "카테고리 생성 실패" });
+    next(err);
   }
 });
 
@@ -61,7 +58,7 @@ router.get("/categories", jwtMiddleware, async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
     if (!portfolioId) {
-      return res.status(400).json({ message: "포트폴리오 ID가 필요합니다." });
+      throw new CustomError("포트폴리오 ID가 필요합니다.", 400);
     }
     const categories = await findCategoriesByPortfolio(portfolioId);
 
@@ -70,8 +67,7 @@ router.get("/categories", jwtMiddleware, async (req, res, next) => {
       data: categories,
     });
   } catch (err) {
-    console.error(`카테고리 조회 에러${err}`, err);
-    return res.status(500).json({ message: "카테고리 조회 실패" });
+    next(err);
   }
 });
 
@@ -82,7 +78,7 @@ router.get("/categories/all", async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
     if (!portfolioId) {
-      return res.status(400).json({ message: "포트폴리오 ID가 필요합니다." });
+      throw new CustomError("포트폴리오 ID가 필요합니다.", 400);
     }
     const categories = await findCategoriesByPortfolio(portfolioId);
 
@@ -91,8 +87,7 @@ router.get("/categories/all", async (req, res, next) => {
       data: categories,
     });
   } catch (err) {
-    console.error(`카테고리 조회 에러${err}`, err);
-    return res.status(500).json({ message: "카테고리 조회 실패" });
+    next(err);
   }
 });
 
@@ -109,7 +104,7 @@ router.patch("/categories/reorder", jwtMiddleware, async (req, res, next) => {
     const { firstCategoryId, secondCategoryId } = req.body;
 
     if (!portfolioId || !firstCategoryId || !secondCategoryId) {
-      return res.status(400).json({ message: "필수값 누락" });
+      throw new CustomError("필수값 누락", 400);
     }
     //카테고리 조회
     const category = await findCategoriesByPortfolio(portfolioId);
@@ -117,7 +112,7 @@ router.patch("/categories/reorder", jwtMiddleware, async (req, res, next) => {
     const secondCategory = category.find((c) => c.id === secondCategoryId);
 
     if (!firstCategory || !secondCategory) {
-      return res.status(404).json({ message: "카테고리 조회 실패" });
+      throw new CustomError("카테고리 조회 실패", 404);
     }
 
     //순서 교환
@@ -134,8 +129,7 @@ router.patch("/categories/reorder", jwtMiddleware, async (req, res, next) => {
       data: result,
     });
   } catch (err) {
-    console.error(`카테고리 순서 재정렬 에러${err}`, err);
-    return res.status(500).json({ message: "카테고리 순서 재정렬 실패" });
+    next(err);
   }
 });
 
@@ -153,14 +147,14 @@ router.patch("/categories/:categoryId", jwtMiddleware, async (req, res, next) =>
     const { name, type } = req.body;
 
     if (!portfolioId || !categoryId) {
-      return res.status(400).json({ message: "필수값 누락" });
+      throw new CustomError("필수값 누락", 400);
     }
 
     //카테고리 존재 여부 확인
     const category = await findCategoryById(categoryId, portfolioId);
 
     if (!category) {
-      return res.status(404).json({ message: "카테고리 조회 실패" });
+      throw new CustomError("카테고리 조회 실패", 404);
     }
 
     //변경할 값 설정정(name 이나 type이 제공되지않은 경우 기존 값 유지)
@@ -175,7 +169,7 @@ router.patch("/categories/:categoryId", jwtMiddleware, async (req, res, next) =>
     //카테고리 정보 업데이트
     const updated = await updateCategory(categoryId, portfolioId, newName, newType);
     if (!updated) {
-      return res.status(400).json({ message: "카테고리 정보 업데이트 실패" });
+      throw new CustomError("카테고리 정보 업데이트 실패", 400);
     }
     return res.status(200).json({
       message: "카테고리 정보 업데이트 완료",
@@ -187,8 +181,7 @@ router.patch("/categories/:categoryId", jwtMiddleware, async (req, res, next) =>
       },
     });
   } catch (err) {
-    console.error(`카테고리 수정 에러${err}`, err);
-    return res.status(500).json({ message: "카테고리 수정 실패" });
+    next(err);
   }
 });
 
@@ -203,19 +196,19 @@ router.delete("/categories/:categoryId", jwtMiddleware, async (req, res, next) =
     const { categoryId } = req.params;
 
     if (!portfolioId || !categoryId) {
-      return res.status(400).json({ message: "필수값 누락" });
+      throw new CustomError("필수값 누락", 400);
     }
 
     //카테고리 존재 여부 확인
     const category = await findCategoryById(categoryId, portfolioId);
     if (!category) {
-      return res.status(404).json({ message: "카테고리 조회 실패" });
+      throw new CustomError("카테고리 조회 실패", 404);
     }
 
     //카테고리 삭제
     const deleted = await deleteCategory(categoryId, portfolioId);
     if (!deleted) {
-      return res.status(400).json({ message: "카테고리 삭제 실패" });
+      throw new CustomError("카테고리 삭제 실패", 400);
     }
     return res.status(200).json({
       message: "카테고리 삭제 완료",
@@ -224,8 +217,7 @@ router.delete("/categories/:categoryId", jwtMiddleware, async (req, res, next) =
       },
     });
   } catch (err) {
-    console.error(`카테고리 삭제 에러${err}`, err);
-    return res.status(500).json({ message: "카테고리 삭제 실패" });
+    next(err);
   }
 });
 export default router;
