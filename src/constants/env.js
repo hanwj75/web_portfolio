@@ -20,10 +20,12 @@ const envData = {
   development: {
     NODE_ENV: env.NODE_ENV,
   },
-  google: {
+  social: {
     GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: env.GOOGLE_CLIENT_SECRET,
     SESSION_SECRET_KEY: env.SESSION_SECRET_KEY,
+    KAKAO_CLIENT_ID: env.KAKAO_CLIENT_ID,
+    KAKAO_CLIENT_SECRET: env.KAKAO_CLIENT_SECRET,
   },
 };
 
