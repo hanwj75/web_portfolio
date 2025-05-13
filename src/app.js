@@ -12,9 +12,10 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import session from "express-session";
 import passport from "passport";
 import "./passport/google.js";
+import "./passport/kakao.js";
 
 const app = express();
-const { server, google } = config;
+const { server, social } = config;
 
 app.use(
   cors({
@@ -36,7 +37,7 @@ app.use("/api", [usersRouter, portfoliosRouter, categoriesRouter, sectionsRouter
 //구글 소셜 로그인
 app.use(
   session({
-    secret: google.SESSION_SECRET_KEY,
+    secret: social.SESSION_SECRET_KEY,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false }, //https환경이라면 true
