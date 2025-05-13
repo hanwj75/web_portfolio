@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://43.203.72.138:3333",
+        url: "http://wojong.shop:3333",
       },
     ],
     components: {

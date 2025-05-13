@@ -10,6 +10,13 @@ const config = {
   development: {
     NODE_ENV: envData.development.NODE_ENV,
   },
+  social: {
+    GOOGLE_CLIENT_ID: envData.social.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: envData.social.GOOGLE_CLIENT_SECRET,
+    SESSION_SECRET_KEY: envData.social.SESSION_SECRET_KEY,
+    KAKAO_CLIENT_ID: envData.social.KAKAO_CLIENT_ID,
+    KAKAO_CLIENT_SECRET: envData.social.KAKAO_CLIENT_SECRET,
+  },
 };
 
 export default config;
