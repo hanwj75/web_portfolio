@@ -16,6 +16,8 @@ const config = {
     SESSION_SECRET_KEY: envData.social.SESSION_SECRET_KEY,
     KAKAO_CLIENT_ID: envData.social.KAKAO_CLIENT_ID,
     KAKAO_CLIENT_SECRET: envData.social.KAKAO_CLIENT_SECRET,
+    NAVER_CLIENT_ID: envData.social.NAVER_CLIENT_ID,
+    NAVER_CLIENT_SECRET: envData.social.NAVER_CLIENT_SECRET,
   },
 };
 
