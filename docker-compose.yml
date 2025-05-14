@@ -5,31 +5,31 @@
 #       mysql:
 #         condition: service_healthy
 #     environment:
-#       - PORT=3333
+#       - PORT=${PORT}
 #       - HOST=0.0.0.0
 #       - DB1_HOST=mysql
 #       - DB1_PORT=3306
-#       - DB1_USER=root
-#       - DB1_PASSWORD=1234
-#       - DB1_NAME=PORTFOLIOS_DB
-#       - JWT=4e81a03e-adee-4885-a20b-1161979f2f9f
-#       - NODE_ENV=development
+#       - DB1_USER=${DB1_USER}
+#       - DB1_PASSWORD=${DB1_PASSWORD}
+#       - DB1_NAME=${DB1_NAME}
+#       - JWT=${JWT}
+#       - NODE_ENV=${NODE_ENV}
 #     ports:
 #       - "3333:3333"
 #     networks:
 #       - apinetwork
 #     restart: always
-#     command: ["sh", "-c", "sleep 15 && yarn migrate && yarn dev"]
+#     command: ["sh", "-c", "yarn migrate && yarn dev"]
 #     volumes:
 #       - ./src:/app/src
 #   mysql:
 #     image: mysql:8.0
 #     environment:
-#       MYSQL_ROOT_PASSWORD: 1234
-#       MYSQL_DATABASE: PORTFOLIOS_DB
+#       MYSQL_ROOT_PASSWORD: ${DB1_PASSWORD}
+#       MYSQL_DATABASE: ${DB1_NAME}
 #     command: --default-authentication-plugin=mysql_native_password
 #     healthcheck:
-#       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+#       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${DB1_USER}", "-p${DB1_PASSWORD}"]
 #       interval: 3s
 #       timeout: 5s
 #       retries: 20
