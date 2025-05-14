@@ -13,6 +13,7 @@ import session from "express-session";
 import passport from "passport";
 import "./passport/google.js";
 import "./passport/kakao.js";
+import "./passport/naver.js";
 
 const app = express();
 const { server, social } = config;
