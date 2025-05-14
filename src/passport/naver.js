@@ -19,7 +19,6 @@ passport.use(
           profile.displayName ||
           profile.username ||
           "네이버유저";
-        console.log(userName);
         if (!email) {
           return done(new CustomError("네이버 계정에 이메일이 없습니다.", 400), null);
         }
