@@ -53,4 +53,27 @@ router.get(
   },
 );
 
+/**
+ * @desc 네이버 소셜 로그인
+ */
+
+router.get("/naver", passport.authenticate("naver"));
+
+router.get(
+  "/naver/callback",
+  passport.authenticate("naver", { failureRedirect: "/auth/naver" }),
+  (req, res, next) => {
+    //JWT 발급
+    const { JWT } = config.server;
+    const token = jwt.sign({ id: req.user.id }, JWT, { expiresIn: "30m" });
+    res.setHeader("Authorization", `Bearer ${token}`);
+    return res.status(200).json({
+      message: "네이버 소셜 로그인 성공",
+      email: req.user.email,
+      userName: req.user.userName,
+      token,
+    });
+  },
+);
+
 export default router;
