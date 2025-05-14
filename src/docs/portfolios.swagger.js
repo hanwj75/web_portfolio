@@ -10,7 +10,6 @@
  * /api/portfolios:
  *   post:
  *     summary: 포트폴리오 생성
- *     description: 새로운 포트폴리오를 생성합니다.
  *     tags: [Portfolios]
  *     security:
  *       - bearerAuth: []
@@ -20,11 +19,11 @@
  *         application/json:
  *           schema:
  *             type: object
+ *             required: [title]
  *             properties:
  *               title:
  *                 type: string
- *                 description: 포트폴리오 제목
- *                 example: "나의 첫 포트폴리오"
+ *                 example: "나의 포트폴리오"
  *     responses:
  *       201:
  *         description: 포트폴리오 생성 성공
@@ -35,22 +34,17 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "포트폴리오 생성 완료"
  *                 data:
  *                   type: object
  *                   properties:
  *                     portfolioId:
- *                       type: integer
- *                       example: 1
+ *                       type: string
  *                     title:
  *                       type: string
- *                       example: "나의 첫 포트폴리오"
  *                     publicUrlId:
  *                       type: string
- *                       example: "abc123"
  *                     isPublic:
  *                       type: boolean
- *                       example: false
  *       400:
  *         description: 잘못된 요청
  *       500:
@@ -59,18 +53,94 @@
 
 /**
  * @swagger
+ * /api/portfolios:
+ *   patch:
+ *     summary: 포트폴리오 제목 수정
+ *     tags: [Portfolios]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: x-portfolio-id
+ *         schema:
+ *           type: string
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [title]
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "수정된 포트폴리오 제목"
+ *     responses:
+ *       200:
+ *         description: 포트폴리오 수정 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     portfolioId:
+ *                       type: string
+ *                     title:
+ *                       type: string
+ *       400:
+ *         description: 잘못된 요청
+ *       403:
+ *         description: 권한 없음
+ *       404:
+ *         description: 포트폴리오를 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
+ * /api/portfolios:
+ *   get:
+ *     summary: 현재 사용자 포트폴리오 목록 조회
+ *     tags: [Portfolios]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 포트폴리오 목록 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Portfolio'
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
  * /api/portfolios/{publicUrlId}:
  *   get:
- *     summary: 포트폴리오 조회 (비로그인)
- *     description: 공개된 포트폴리오를 조회합니다.
+ *     summary: 포트폴리오 전체 조회 (비로그인)
  *     tags: [Portfolios]
  *     parameters:
  *       - in: path
  *         name: publicUrlId
- *         required: true
  *         schema:
  *           type: string
- *         description: 포트폴리오 공개 URL ID
+ *         required: true
  *     responses:
  *       200:
  *         description: 포트폴리오 조회 성공
@@ -81,7 +151,6 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "포트폴리오 조회 완료"
  *                 data:
  *                   $ref: '#/components/schemas/Portfolio'
  *       400:
@@ -94,20 +163,93 @@
 
 /**
  * @swagger
+ * /api/portfolios/{publicUrlId}/categories/{categoryId}:
+ *   get:
+ *     summary: 포트폴리오 카테고리별 조회
+ *     tags: [Portfolios]
+ *     parameters:
+ *       - in: path
+ *         name: publicUrlId
+ *         schema:
+ *           type: string
+ *         required: true
+ *       - in: path
+ *         name: categoryId
+ *         schema:
+ *           type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: 포트폴리오 카테고리별 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/CategoryWithSections'
+ *       400:
+ *         description: 잘못된 요청
+ *       404:
+ *         description: 카테고리를 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
+ * /api/portfolios/{publicUrlId}/categories/order/{sortOrder}:
+ *   get:
+ *     summary: 포트폴리오 sortOrder 조회
+ *     tags: [Portfolios]
+ *     parameters:
+ *       - in: path
+ *         name: publicUrlId
+ *         schema:
+ *           type: string
+ *         required: true
+ *       - in: path
+ *         name: sortOrder
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: 포트폴리오 sortOrder 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/CategoryWithSections'
+ *       400:
+ *         description: 잘못된 요청
+ *       404:
+ *         description: 카테고리를 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
  * /api/portfolios/deploy:
  *   patch:
  *     summary: 포트폴리오 공개 설정
- *     description: 포트폴리오를 공개 상태로 설정합니다.
  *     tags: [Portfolios]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: header
  *         name: x-portfolio-id
- *         required: true
  *         schema:
  *           type: string
- *         description: 포트폴리오 ID
+ *         required: true
  *     responses:
  *       200:
  *         description: 포트폴리오 공개 설정 성공
@@ -118,16 +260,13 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "포트폴리오 공개 설정 완료"
  *                 data:
  *                   type: object
  *                   properties:
  *                     portfolioId:
- *                       type: integer
- *                       example: 1
+ *                       type: string
  *                     isPublic:
  *                       type: boolean
- *                       example: true
  *       400:
  *         description: 잘못된 요청
  *       404:
@@ -141,17 +280,15 @@
  * /api/portfolios/undeploy:
  *   patch:
  *     summary: 포트폴리오 비공개 설정
- *     description: 포트폴리오를 비공개 상태로 설정합니다.
  *     tags: [Portfolios]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: header
  *         name: x-portfolio-id
- *         required: true
  *         schema:
  *           type: string
- *         description: 포트폴리오 ID
+ *         required: true
  *     responses:
  *       200:
  *         description: 포트폴리오 비공개 설정 성공
@@ -162,18 +299,54 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "포트폴리오 비공개 설정 완료"
  *                 data:
  *                   type: object
  *                   properties:
  *                     portfolioId:
- *                       type: integer
- *                       example: 1
+ *                       type: string
  *                     isPublic:
  *                       type: boolean
- *                       example: false
  *       400:
  *         description: 잘못된 요청
+ *       404:
+ *         description: 포트폴리오를 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
+ * /api/portfolios/{portfolioId}:
+ *   delete:
+ *     summary: 포트폴리오 삭제
+ *     tags: [Portfolios]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: portfolioId
+ *         schema:
+ *           type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: 포트폴리오 삭제 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     portfolioId:
+ *                       type: string
+ *       400:
+ *         description: 잘못된 요청
+ *       403:
+ *         description: 권한 없음
  *       404:
  *         description: 포트폴리오를 찾을 수 없음
  *       500:
@@ -188,25 +361,59 @@
  *       type: object
  *       properties:
  *         id:
- *           type: integer
- *           example: 1
+ *           type: string
+ *         userId:
+ *           type: string
  *         title:
  *           type: string
- *           example: "나의 포트폴리오"
  *         publicUrlId:
  *           type: string
- *           example: "abc123"
  *         isPublic:
  *           type: boolean
- *           example: true
  *         createdAt:
  *           type: string
  *           format: date-time
- *           example: "2023-01-01T00:00:00Z"
  *         updatedAt:
  *           type: string
  *           format: date-time
- *           example: "2023-01-01T00:00:00Z"
+ *     CategoryWithSections:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         portfolioId:
+ *           type: string
+ *         name:
+ *           type: string
+ *         type:
+ *           type: string
+ *         sortOrder:
+ *           type: number
+ *         sections:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Section'
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *     Section:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         categoryId:
+ *           type: string
+ *         content:
+ *           type: object
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  *   securitySchemes:
  *     bearerAuth:
  *       type: http

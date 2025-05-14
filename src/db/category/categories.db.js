@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import pools from "../database.js";
 import { SQL_QUERIES } from "../sql.queries.js";
 import { toCamelCase } from "../../utils/response/transformCase.js";
+import CustomError from "../../utils/error/customError.js";
 
 /**
  * @desc 카테고리 생성
@@ -27,7 +28,8 @@ export const createCategory = async (portfolioId, name, type) => {
     return { id, name, type, sortOrder: nextOrder };
   } catch (err) {
     console.error(`카테고리 생성 에러${err}`, err);
-    throw err;
+    if (err instanceof CustomError) throw err;
+    throw new CustomError("카테고리 생성 에러", 500);
   }
 };
 
@@ -48,7 +50,8 @@ export const findCategoriesByPortfolio = async (portfolioId) => {
     }));
   } catch (err) {
     console.error(`포트폴리오 카테고리 조회 에러${err}`, err);
-    throw err;
+    if (err instanceof CustomError) throw err;
+    throw new CustomError("포트폴리오 카테고리 조회 에러", 500);
   }
 };
 
@@ -65,6 +68,101 @@ export const findCategoryById = async (categoryId, portfolioId) => {
     return toCamelCase(rows[0]);
   } catch (err) {
     console.error(`특정 카테고리 조회 에러${err}`, err);
-    throw err;
+    if (err instanceof CustomError) throw err;
+    throw new CustomError("특정 카테고리 조회 에러", 500);
+  }
+};
+
+/**
+ * @desc 카테고리 순서 재정렬
+ */
+
+export const reorderCategories = async (
+  portfolioId,
+  firstCategoryId,
+  firstOrder,
+  secondCategoryId,
+  secondOrder,
+) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.REORDER_CATEGORIES, [
+      firstCategoryId,
+      secondOrder,
+      secondCategoryId,
+      firstOrder,
+      firstCategoryId,
+      secondCategoryId,
+      portfolioId,
+    ]);
+
+    if (rows.affectedRows === 0) {
+      throw new CustomError("카테고리 순서 변경 실패", 400);
+    }
+    return {
+      firstCategoryId: {
+        id: firstCategoryId,
+        newOrder: secondOrder,
+      },
+      secondCategoryId: {
+        id: secondCategoryId,
+        newOrder: firstOrder,
+      },
+    };
+  } catch (err) {
+    console.error(`카테고리 순서 재정렬 에러${err}`, err);
+    if (err instanceof CustomError) throw err;
+    throw new CustomError("카테고리 순서 재정렬 에러", 500);
+  }
+};
+
+/**
+ * @desc 카테고리 삭제
+ */
+export const deleteCategory = async (categoryId, portfolioId) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DELETE_CATEGORY, [
+      categoryId,
+      portfolioId,
+    ]);
+    return rows.affectedRows > 0;
+  } catch (err) {
+    console.error(`카테고리 삭제 에러${err}`, err);
+    if (err instanceof CustomError) throw err;
+    throw new CustomError("카테고리 삭제 에러", 500);
+  }
+};
+
+/**
+ * @desc 카테고리 타입변경시 섹션삭제
+ */
+
+export const deleteSectionByCategoryId = async (id) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.DELETE_SECTION, [id]);
+    return rows.affectedRows > 0;
+  } catch (err) {
+    console.error(`카테고리 타입변경시 섹션삭제 에러${err}`, err);
+    if (err instanceof CustomError) throw err;
+    throw new CustomError("카테고리 타입변경시 섹션삭제 에러", 500);
+  }
+};
+
+/**
+ * @desc 카테고리 정보 업데이트
+ */
+
+export const updateCategory = async (id, portfolioId, name, type) => {
+  try {
+    const [rows] = await pools.PORTFOLIOS_DB.query(SQL_QUERIES.UPDATE_CATEGORY, [
+      name,
+      type,
+      id,
+      portfolioId,
+    ]);
+    return rows.affectedRows > 0;
+  } catch (err) {
+    console.error(`카테고리 정보 업데이트 에러${err}`, err);
+    if (err instanceof CustomError) throw err;
+    throw new CustomError("카테고리 정보 업데이트 에러", 500);
   }
 };

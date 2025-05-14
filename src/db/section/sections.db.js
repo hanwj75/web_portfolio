@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import pools from "../database.js";
 import { SQL_QUERIES } from "../sql.queries.js";
 import { toCamelCase } from "../../utils/response/transformCase.js";
+import CustomError from "../../utils/error/customError.js";
 
 /**
  * @desc 섹션 생성
@@ -18,7 +19,8 @@ export const createSection = async (categoryId, content) => {
     return { id, categoryId, content };
   } catch (err) {
     console.error(`섹션 생성 에러${err}`, err);
-    throw err;
+    if (err instanceof CustomError) throw err;
+    throw new CustomError("섹션 생성 에러", 500);
   }
 };
 
@@ -34,7 +36,8 @@ export const findSectionsByCategory = async (categoryId) => {
     return toCamelCase(rows);
   } catch (err) {
     console.error(`섹션 조회 에러${err}`, err);
-    throw err;
+    if (err instanceof CustomError) throw err;
+    throw new CustomError("섹션 조회 에러", 500);
   }
 };
 
@@ -53,6 +56,7 @@ export const updateSectionContent = async (id, categoryId, content) => {
     return rows.affectedRows > 0;
   } catch (err) {
     console.error(`섹션 업데이트 에러${err}`, err);
-    throw err;
+    if (err instanceof CustomError) throw err;
+    throw new CustomError("섹션 업데이트 에러", 500);
   }
 };
