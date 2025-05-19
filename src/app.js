@@ -14,6 +14,7 @@ import passport from "passport";
 import "./passport/google.js";
 import "./passport/kakao.js";
 import "./passport/naver.js";
+import { autoSaveMiddleware } from "./middlewares/autoSave.middleware.js";
 
 const app = express();
 const { server, social } = config;
