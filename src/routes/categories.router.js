@@ -10,7 +10,6 @@ import {
   updateCategory,
 } from "../db/category/categories.db.js";
 import CustomError from "../utils/error/customError.js";
-import { autoSaveMiddleware } from "../middlewares/autoSave.middleware.js";
 
 const router = express.Router();
 
@@ -21,18 +20,10 @@ const router = express.Router();
  * {"name":"카테고리 이름","type":"profile"}
  */
 
-router.post("/categories", jwtMiddleware, autoSaveMiddleware, async (req, res, next) => {
+router.post("/categories", jwtMiddleware, async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
     const { name, type } = req.body;
-
-    //임시저장 데이터가 있는 경우
-    if (portfolioId.startsWith("draft-")) {
-      //임시저장 데이터에 카테고리 추가 (미들웨어에서 처리)
-      return res.status(201).json({
-        message: "카테고리 임시저장 완료",
-      });
-    }
 
     if (!portfolioId) {
       throw new CustomError("포트폴리오 ID가 필요합니다.", 400);

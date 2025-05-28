@@ -14,7 +14,12 @@ import {
 } from "./../db/portfolio/portfolios.db.js";
 import CustomError from "../utils/error/customError.js";
 import { redis } from "../db/redis/redis.functions.js";
-import { autoSaveMiddleware } from "../middlewares/autoSave.middleware.js";
+import {
+  endPortfolioEdit,
+  getPortfolioDraft,
+  startPortfolioEdit,
+  updatePortfolioDraft,
+} from "../middlewares/autoSave.middleware.js";
 
 const router = express.Router();
 
@@ -23,7 +28,7 @@ const router = express.Router();
  * @body
  * {"title":"포트폴리오 제목"}
  */
-router.post("/portfolios", jwtMiddleware, autoSaveMiddleware, async (req, res, next) => {
+router.post("/portfolios", jwtMiddleware, async (req, res, next) => {
   try {
     const { id: userId } = req.user;
     const { title } = req.body;
@@ -33,12 +38,6 @@ router.post("/portfolios", jwtMiddleware, autoSaveMiddleware, async (req, res, n
     }
     //포트폴리오 생성
     const { id: portfolioId, publicUrlId } = await createPortfolio(userId, title);
-
-    //임시저장 데이터가 있었다면 삭제
-    if (portfolioId && portfolioId.startsWith("draft-")) {
-      // await redis.portfolio.deleteAutoSave(userId, portfolioId);
-      console.log("임시저장 데이터 삭제");
-    }
 
     return res.status(201).json({
       message: "포트폴리오 생성 완료",
@@ -54,30 +53,38 @@ router.post("/portfolios", jwtMiddleware, autoSaveMiddleware, async (req, res, n
   }
 });
 
+// /**
+//  * @desc 포트폴리오 임시저장 데이터 조회
+//  */
+// router.get("/portfolios/draft", jwtMiddleware, async (req, res, next) => {
+//   try {
+//     const { id: userId } = req.user;
+//     const portfolioId = req.headers["x-portfolio-id"];
+
+//     //임시저장 ID 검증
+//     if (!portfolioId || !portfolioId.startsWith("draft-")) {
+//       throw new CustomError("임시저장 ID가 필요합니다.", 400);
+//     }
+
+//     // 미들웨어에서 관리하는 임시저장 데이터 조회
+//     const draftData = await redis.portfolio.getAutoSave(userId, portfolioId);
+
+//     return res.status(200).json({
+//       message: "임시저장 데이터 조회 성공",
+//       data: draftData || null,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// });
+
 /**
- * @desc 포트폴리오 임시저장 데이터 조회
+ * @desc 포트폴리오 임시저장 시작, 업데이트, 조회, 삭제
  */
-router.get("/portfolios/draft", jwtMiddleware, async (req, res, next) => {
-  try {
-    const { id: userId } = req.user;
-    const portfolioId = req.headers["x-portfolio-id"];
-
-    //임시저장 ID 검증
-    if (!portfolioId || !portfolioId.startsWith("draft-")) {
-      throw new CustomError("임시저장 ID가 필요합니다.", 400);
-    }
-
-    // 미들웨어에서 관리하는 임시저장 데이터 조회
-    const draftData = await redis.portfolio.getAutoSave(userId, portfolioId);
-
-    return res.status(200).json({
-      message: "임시저장 데이터 조회 성공",
-      data: draftData || null,
-    });
-  } catch (err) {
-    next(err);
-  }
-});
+router.post("/portfolios/draft/start", jwtMiddleware, startPortfolioEdit);
+router.patch("/portfolios/draft", jwtMiddleware, updatePortfolioDraft);
+router.get("/portfolios/draft", jwtMiddleware, getPortfolioDraft);
+router.delete("/portfolios/draft", jwtMiddleware, endPortfolioEdit);
 
 /**
  * @desc 포트폴리오 수정

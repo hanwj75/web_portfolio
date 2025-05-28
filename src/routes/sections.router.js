@@ -7,7 +7,6 @@ import {
   updateSectionContent,
 } from "../db/section/sections.db.js";
 import CustomError from "../utils/error/customError.js";
-import { autoSaveMiddleware } from "../middlewares/autoSave.middleware.js";
 
 const router = express.Router();
 
@@ -18,7 +17,7 @@ const router = express.Router();
  * @body { "categoryId": "카테고리 UUID", "content": { ... } }
  */
 
-router.post("/sections", jwtMiddleware, autoSaveMiddleware, async (req, res, next) => {
+router.post("/sections", jwtMiddleware, async (req, res, next) => {
   try {
     const portfolioId = req.headers["x-portfolio-id"];
     const { categoryId, content } = req.body;
@@ -26,14 +25,6 @@ router.post("/sections", jwtMiddleware, autoSaveMiddleware, async (req, res, nex
     //필수값 체크
     if (!portfolioId || !categoryId || !content) {
       throw new CustomError("필수값 누락.", 400);
-    }
-
-    // 임시저장 데이터가 있는 경우
-    if (portfolioId.startsWith("draft-")) {
-      // 임시저장 데이터에 섹션 추가 (미들웨어에서 처리)
-      return res.status(201).json({
-        message: "섹션 임시저장 완료",
-      });
     }
 
     //카테고리 검증

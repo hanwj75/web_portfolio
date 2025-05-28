@@ -1,10 +1,6 @@
 // src/db/redis/redis.functions.js
 import redisCli from "./redis.js";
-import {
-  RedisHashError,
-  RedisKeyError,
-  RedisPortfolioError,
-} from "../../utils/error/redisError.js";
+import { RedisHashError, RedisKeyError } from "../../utils/error/redisError.js";
 
 export const redis = {
   hash: {
@@ -88,48 +84,6 @@ export const redis = {
       } catch (err) {
         console.error("Redis Key Exists Error:", err);
         throw new RedisKeyError(`Redis 키 존재 여부 확인 실패: ${err.message}`);
-      }
-    },
-  },
-
-  portfolio: {
-    createAutoSaveKey: (userId, portfolioId) => {
-      return `portfolio:${userId}:${portfolioId}:autosave`;
-    },
-
-    portAutoSave: async (userId, portfolioId, data) => {
-      const key = redis.portfolio.createAutoSaveKey(userId, portfolioId);
-      try {
-        await redis.hash.set(key, {
-          ...data,
-          lastSaved: new Date().toISOString(),
-          isAutoSaved: "true",
-        });
-        await redis.key.setExpire(key, 24 * 60 * 60);
-        return true;
-      } catch (err) {
-        console.error("Portfolio Auto Save Error:", err);
-        throw new RedisPortfolioError(`포트폴리오 자동 저장 실패: ${err.message}`);
-      }
-    },
-
-    getAutoSave: async (userId, portfolioId) => {
-      const key = redis.portfolio.createAutoSaveKey(userId, portfolioId);
-      try {
-        return await redis.hash.get(key);
-      } catch (err) {
-        console.error("Portfolio Auto Save Get Error:", err);
-        throw new RedisPortfolioError(`포트폴리오 자동 저장 데이터 조회 실패: ${err.message}`);
-      }
-    },
-
-    deleteAutoSave: async (userId, portfolioId) => {
-      const key = redis.portfolio.createAutoSaveKey(userId, portfolioId);
-      try {
-        return await redis.hash.delete(key);
-      } catch (err) {
-        console.error("Portfolio Auto Save Delete Error:", err);
-        throw new RedisPortfolioError(`포트폴리오 자동 저장 데이터 삭제 실패: ${err.message}`);
       }
     },
   },
