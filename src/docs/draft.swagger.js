@@ -45,7 +45,7 @@
 
 /**
  * @swagger
- * /portfolios/draft/start:
+ * api/portfolios/draft/start:
  *   post:
  *     summary: 포트폴리오 임시저장 시작
  *     description: Redis에 임시 저장 시작 및 자동 저장 타이머 설정
@@ -73,7 +73,7 @@
  */
 /**
  * @swagger
- * /portfolios/draft:
+ * api/portfolios/draft:
  *   patch:
  *     summary: 포트폴리오 임시저장 업데이트
  *     description: Redis 데이터 업데이트 및 타이머 갱신
@@ -108,7 +108,7 @@
 
 /**
  * @swagger
- * /portfolios/draft:
+ * api/portfolios/draft:
  *   get:
  *     summary: 임시저장 포트폴리오 조회
  *     description: Redis에 저장된 현재 작업중인 포트폴리오 조회
@@ -128,7 +128,7 @@
 
 /**
  * @swagger
- * /portfolios/draft:
+ * api/portfolios/draft:
  *   delete:
  *     summary: 포트폴리오 임시저장 종료
  *     description: Redis 데이터 삭제 및 타이머 정지
@@ -148,7 +148,7 @@
 
 /**
  * @swagger
- * /portfolios/draft/save:
+ * api/portfolios/draft/save:
  *   post:
  *     summary: 포트폴리오 수동 임시저장
  *     description: Redis 데이터를 DB에 즉시 저장하고 타이머 갱신
