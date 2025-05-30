@@ -14,8 +14,8 @@ import { createDraft } from "../db/portfolio/draft.db.js";
  * 6. 다시 입력 시작시 타이머 시작
  */
 
-const AUTO_SAVE_INTERVAL = 20; // 10분
-const DB_SAVE_INTERVAL = 9; // 9분 후 DB 저장
+const AUTO_SAVE_INTERVAL = 10 * 60; // 10분
+const DB_SAVE_INTERVAL = 9 * 60; // 9분 후 DB 저장
 const REDIS_KEY_PREFIX = "autoSave:";
 
 // 사용자별 타이머 관리
