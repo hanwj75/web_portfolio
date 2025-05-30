@@ -1,5 +1,6 @@
 import Redis from "ioredis";
 import dbConfig from "../../config/dbConfig.js";
+import { createDraft } from "../portfolio/draft.db.js";
 
 const dotRedis = dbConfig.redis;
 
