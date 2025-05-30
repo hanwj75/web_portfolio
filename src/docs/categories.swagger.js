@@ -1,58 +1,39 @@
 /**
  * @swagger
- * components:
- *   schemas:
- *     Category:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           description: 카테고리 UUID
- *         name:
- *           type: string
- *           description: 카테고리 이름
- *         type:
- *           type: string
- *           enum: [profile, project]
- *           description: 카테고리 타입
- *         sortOrder:
- *           type: number
- *           description: 카테고리 정렬 순서
- *         portfolioId:
- *           type: string
- *           description: 포트폴리오 UUID
- *
+ * tags:
+ *   name: Categories
+ *   description: 카테고리 관리 API
+ */
+
+/**
+ * @swagger
  * /api/categories:
  *   post:
- *     tags: [Categories]
  *     summary: 카테고리 생성
- *     description: 새로운 카테고리를 생성합니다.
+ *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: header
  *         name: x-portfolio-id
- *         required: true
  *         schema:
  *           type: string
- *         description: 포트폴리오 UUID
+ *         required: true
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - name
- *               - type
+ *             required: [name, type]
  *             properties:
  *               name:
  *                 type: string
- *                 description: 카테고리 이름
+ *                 example: "프로젝트"
  *               type:
  *                 type: string
  *                 enum: [profile, project]
- *                 description: 카테고리 타입
+ *                 example: "project"
  *     responses:
  *       201:
  *         description: 카테고리 생성 성공
@@ -63,29 +44,39 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: 카테고리 생성 완료
  *                 data:
- *                   $ref: '#/components/schemas/Category'
+ *                   type: object
+ *                   properties:
+ *                     categoryId:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     type:
+ *                       type: string
+ *                     sortOrder:
+ *                       type: number
  *       400:
  *         description: 잘못된 요청
  *       409:
  *         description: 카테고리 중복
  *       500:
- *         description: 서버 에러
- *
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
+ * /api/categories:
  *   get:
+ *     summary: 포트폴리오의 모든 카테고리 조회 (로그인)
  *     tags: [Categories]
- *     summary: 카테고리 목록 조회 (로그인)
- *     description: 포트폴리오의 모든 카테고리를 조회합니다.
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: header
  *         name: x-portfolio-id
- *         required: true
  *         schema:
  *           type: string
- *         description: 포트폴리오 UUID
+ *         required: true
  *     responses:
  *       200:
  *         description: 카테고리 조회 성공
@@ -96,7 +87,6 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: 카테고리 조회 완료
  *                 data:
  *                   type: array
  *                   items:
@@ -104,20 +94,21 @@
  *       400:
  *         description: 잘못된 요청
  *       500:
- *         description: 서버 에러
- *
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
  * /api/categories/all:
  *   get:
+ *     summary: 포트폴리오의 모든 카테고리 조회 (비로그인)
  *     tags: [Categories]
- *     summary: 카테고리 목록 조회 (비로그인)
- *     description: 포트폴리오의 모든 카테고리를 비로그인 상태로 조회합니다.
  *     parameters:
  *       - in: header
  *         name: x-portfolio-id
- *         required: true
  *         schema:
  *           type: string
- *         description: 포트폴리오 UUID
+ *         required: true
  *     responses:
  *       200:
  *         description: 카테고리 조회 성공
@@ -128,7 +119,6 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: 카테고리 조회 완료
  *                 data:
  *                   type: array
  *                   items:
@@ -136,5 +126,188 @@
  *       400:
  *         description: 잘못된 요청
  *       500:
- *         description: 서버 에러
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
+ * /api/categories/reorder:
+ *   patch:
+ *     summary: 카테고리 순서 재정렬
+ *     tags: [Categories]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: x-portfolio-id
+ *         schema:
+ *           type: string
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [firstCategoryId, secondCategoryId]
+ *             properties:
+ *               firstCategoryId:
+ *                 type: string
+ *               secondCategoryId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: 카테고리 순서 재정렬 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Category'
+ *       400:
+ *         description: 잘못된 요청
+ *       404:
+ *         description: 카테고리 조회 실패
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
+ * /api/categories/{categoryId}:
+ *   patch:
+ *     summary: 카테고리 수정
+ *     tags: [Categories]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: x-portfolio-id
+ *         schema:
+ *           type: string
+ *         required: true
+ *       - in: path
+ *         name: categoryId
+ *         schema:
+ *           type: string
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "수정된 카테고리 이름"
+ *               type:
+ *                 type: string
+ *                 enum: [profile, project]
+ *                 example: "project"
+ *     responses:
+ *       200:
+ *         description: 카테고리 수정 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     categoryId:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     type:
+ *                       type: string
+ *                     isSectionReset:
+ *                       type: boolean
+ *       400:
+ *         description: 잘못된 요청
+ *       404:
+ *         description: 카테고리 조회 실패
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
+ * /api/categories/{categoryId}:
+ *   delete:
+ *     summary: 카테고리 삭제
+ *     tags: [Categories]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: x-portfolio-id
+ *         schema:
+ *           type: string
+ *         required: true
+ *       - in: path
+ *         name: categoryId
+ *         schema:
+ *           type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: 카테고리 삭제 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     categoryId:
+ *                       type: string
+ *       400:
+ *         description: 잘못된 요청
+ *       404:
+ *         description: 카테고리 조회 실패
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Category:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         portfolioId:
+ *           type: string
+ *         name:
+ *           type: string
+ *         type:
+ *           type: string
+ *           enum: [profile, project]
+ *         sortOrder:
+ *           type: number
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  */

@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://43.203.72.138:3333",
+        url: "http://wojong.shop:3333",
       },
     ],
     components: {
@@ -34,6 +34,7 @@ const options = {
     "./src/docs/portfolios.swagger.js",
     "./src/docs/categories.swagger.js",
     "./src/docs/sections.swagger.js",
+    "./src/docs/draft.swagger.js",
   ],
 };
 

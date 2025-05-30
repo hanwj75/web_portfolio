@@ -16,9 +16,18 @@ export const SQL_QUERIES = {
   //포트폴리오 단일 조회
   FIND_PORTFOLIO_BY_UUID: `SELECT * FROM Portfolios WHERE id = ?`,
   //사용자의 모든 포트폴리오 목록 조회
-  FIND_USER_PORTFOLIOS: `SELECT p.*, COUNT(s.id) as sectionCount FROM Portfolios p  LEFT JOIN Sections s ON p.id = s.portfolioId WHERE p.userId = ? GROUP BY p.id`,
+  FIND_USER_PORTFOLIOS: `SELECT * FROM Portfolios WHERE userId = ? ORDER BY createdAt ASC`,
 
-  // 포트폴리오 전체 정보 조회 (포트폴리오에 대한 모든 정보 반환)
+  // //포트폴리오 이름으로 검색
+  // FIND_PORTFOLIO_BY_TITLE: `SELECT * FROM Portfolios WHERE title LIKE CONCAT('%',?,'%') `,
+
+  //포트폴리오 카테고리별 조회
+  FIND_PORTFOLIO_BY_CATEGORY: `SELECT p.*,c.id as categoryId, c.name as categoryName, c.type as categoryType, s.id as sectionId, s.content as sectionContent 
+  FROM Portfolios p
+  LEFT JOIN Categories c ON p.id = c.portfolioId
+  LEFT JOIN Sections s ON c.id = s.categoryId
+  WHERE p.publicUrlId = ? AND p.isPublic = true AND c.id = ? `,
+  //포트폴리오 전체 정보 조회 (포트폴리오에 대한 모든 정보 반환)
   FIND_PORTFOLIO_WITH_CATEGORIES_AND_SECTIONS: `SELECT p.*,c.id as categoryId,c.name as categoryName,c.type as categoryType,s.id as sectionId,s.content as sectionContent,s.sortOrder as sectionOrder 
     FROM Portfolios p
     LEFT JOIN Categories c ON p.id = c.portfolioId
@@ -26,6 +35,16 @@ export const SQL_QUERIES = {
     WHERE p.id = ?
     ORDER BY c.name ASC, s.sortOrder ASC
   `,
+  //포트폴리오 sortOrder 조회
+  FIND_PORTFOLIO_CATEGORY_ORDER: `SELECT c.id as categoryId,c.name as categoryName,c.type as categoryType,c.sortOrder,s.id as sectionId, s.content as sectionContent 
+  FROM Portfolios p
+  LEFT JOIN Categories c ON p.id = c.portfolioId
+  LEFT JOIN Sections s ON c.id = s.categoryId
+  WHERE p.publicUrlId = ?
+  AND p.isPublic = true
+  AND c.sortOrder = ? `,
+  //포트폴리오 수정
+  UPDATE_PORTFOLIO: `UPDATE Portfolios SET title = ?,updatedAt = CURRENT_TIMESTAMP WHERE id = ? `,
   //포트폴리오 삭제
   DELETE_PORTFOLIO: `DELETE FROM Portfolios WHERE id = ?`,
   //포트폴리오 배포 상태 업데이트(공개)
@@ -40,6 +59,12 @@ export const SQL_QUERIES = {
     WHERE p.publicUrlId = ? AND p.isPublic = true 
     ORDER BY c.sortOrder ASC`,
 
+  //포트폴리오 임시저장
+  CREATE_DRAFT: `INSERT INTO Drafts (id,userId,data) VALUES(?,?,?)`,
+  FIND_USER_DRAFT: `SELECT * FROM Drafts WHERE userId = ? ORDER BY createdAt DESC LIMIT 1`,
+  UPDATE_DRAFT: `UPDATE Drafts SET data = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
+  DELETE_DRAFT: `DELETE FROM Drafts WHERE id = ?`,
+
   //Sections
   //카테고리별 섹션 조회
   FIND_SECTIONS_BY_CATEGORY: `SELECT * FROM Sections WHERE categoryId = ?`,
@@ -52,7 +77,7 @@ export const SQL_QUERIES = {
   //섹션 순서 재정렬
   REORDER_SECTIONS: `UPDATE Sections SET sortOrder = ? WHERE id = ? AND categoryId = ?`,
   //섹션 삭제
-  DELETE_SECTION: `DELETE FROM Sections WHERE id = ? AND categoryId = ?`,
+  DELETE_SECTION: `DELETE FROM Sections WHERE categoryId = ?`,
 
   //category
   CREATE_CATEGORY: `INSERT INTO Categories (id,portfolioId,name,type,sortOrder) VALUES(?,?,?,?,?)`,
@@ -66,6 +91,13 @@ export const SQL_QUERIES = {
   DELETE_CATEGORY: `DELETE FROM Categories WHERE id = ? AND portfolioId = ? `,
   //포트폴리오의 마지막 카테고리 순서 조회
   FIND_LAST_CATEGORY_ORDER: `SELECT MAX(sortOrder) as maxOrder FROM Categories WHERE portfolioId = ?`,
+  //카테고리 순서 재정렬
+  REORDER_CATEGORIES: `UPDATE Categories 
+  SET sortOrder = CASE 
+      WHEN id = ? THEN ? 
+      WHEN id = ? THEN ? 
+  END
+  WHERE id IN (?, ?) AND portfolioId = ?`,
 
   // 포트폴리오 전체 정보 조회 (포트폴리오에 대한 모든 정보 반환)
   FIND_PORTFOLIO_WITH_CATEGORIES_AND_SECTIONS: `SELECT p.*,c.id as categoryId,c.name as categoryName,c.type as categoryType,s.id as sectionId,s.content as sectionContent,s.sortOrder as sectionOrder 
