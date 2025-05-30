@@ -32,6 +32,9 @@ const createSchemas = async () => {
 
     // PORTFOLIOS_DB에 sections 테이블 생성
     await executeSqlFile(pools.PORTFOLIOS_DB, path.join(sqlDir, "sections.sql"));
+
+    // PORTFOLIOS_DB에 drafts 테이블 생성
+    await executeSqlFile(pools.PORTFOLIOS_DB, path.join(sqlDir, "draft.sql"));
   } catch (err) {
     console.error("데이터베이스 테이블 생성 중 오류가 발생했습니다:", err);
   }

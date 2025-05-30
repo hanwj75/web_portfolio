@@ -17,6 +17,11 @@ const envData = {
     DB1_HOST: env.DB1_HOST || "DB_HOST",
     DB1_PORT: env.DB1_PORT || "DB_PORT",
   },
+  redis: {
+    REDIS_HOST: env.REDIS_HOST || "REDIS_HOST",
+    REDIS_PORT: env.REDIS_PORT || "REDIS_PORT",
+    REDIS_PASSWORD: env.REDIS_PASSWORD || "REDIS_PASSWORD",
+  },
   development: {
     NODE_ENV: env.NODE_ENV,
   },

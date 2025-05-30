@@ -59,6 +59,12 @@ export const SQL_QUERIES = {
     WHERE p.publicUrlId = ? AND p.isPublic = true 
     ORDER BY c.sortOrder ASC`,
 
+  //포트폴리오 임시저장
+  CREATE_DRAFT: `INSERT INTO Drafts (id,userId,data) VALUES(?,?,?)`,
+  FIND_USER_DRAFT: `SELECT * FROM Drafts WHERE userId = ? ORDER BY createdAt DESC LIMIT 1`,
+  UPDATE_DRAFT: `UPDATE Drafts SET data = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
+  DELETE_DRAFT: `DELETE FROM Drafts WHERE id = ?`,
+
   //Sections
   //카테고리별 섹션 조회
   FIND_SECTIONS_BY_CATEGORY: `SELECT * FROM Sections WHERE categoryId = ?`,

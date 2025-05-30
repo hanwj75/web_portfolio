@@ -26,6 +26,7 @@ router.post("/sections", jwtMiddleware, async (req, res, next) => {
     if (!portfolioId || !categoryId || !content) {
       throw new CustomError("필수값 누락.", 400);
     }
+
     //카테고리 검증
     const category = await findCategoryById(categoryId, portfolioId);
     if (!category) {

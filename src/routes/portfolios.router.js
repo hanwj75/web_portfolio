@@ -13,6 +13,14 @@ import {
   findPortfolioSortOrder,
 } from "./../db/portfolio/portfolios.db.js";
 import CustomError from "../utils/error/customError.js";
+import { redis } from "../db/redis/redis.functions.js";
+import {
+  endPortfolioEdit,
+  getPortfolioDraft,
+  startPortfolioEdit,
+  updatePortfolioDraft,
+  savePortfolioDraft,
+} from "../middlewares/autoSave.middleware.js";
 
 const router = express.Router();
 
@@ -45,6 +53,15 @@ router.post("/portfolios", jwtMiddleware, async (req, res, next) => {
     next(err);
   }
 });
+
+/**
+ * @desc 포트폴리오 임시저장 시작, 업데이트, 조회, 삭제, 수동 저장
+ */
+router.post("/portfolios/draft/start", jwtMiddleware, startPortfolioEdit);
+router.patch("/portfolios/draft", jwtMiddleware, updatePortfolioDraft);
+router.get("/portfolios/draft", jwtMiddleware, getPortfolioDraft);
+router.delete("/portfolios/draft", jwtMiddleware, endPortfolioEdit);
+router.post("/portfolios/draft/save", jwtMiddleware, savePortfolioDraft);
 
 /**
  * @desc 포트폴리오 수정

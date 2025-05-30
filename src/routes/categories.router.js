@@ -18,7 +18,6 @@ const router = express.Router();
  * @header x-portfolio-id: 포트폴리오 UUID
  * @body
  * {"name":"카테고리 이름","type":"profile"}
- * {"name":"카테고리 이름","type":"project"}
  */
 
 router.post("/categories", jwtMiddleware, async (req, res, next) => {
