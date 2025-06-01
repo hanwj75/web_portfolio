@@ -114,14 +114,14 @@ router.post(
  * @desc 카테고리별 전체 섹션 조회
  */
 
-router.get("/portfolios/categories/:categoryId/sections", async (req, res, next) => {
+router.get("/portfolios/:portfolioId/categories/:categoryId/sections", async (req, res, next) => {
   try {
-    const { categoryId } = req.params;
-    if (!categoryId) {
-      throw new CustomError("카테고리를 찾을 수 없습니다.", 400);
+    const { portfolioId, categoryId } = req.params;
+    if (!portfolioId || !categoryId) {
+      throw new CustomError("포트폴리오 ID와 카테고리 ID가 필요합니다.", 400);
     }
     //카테고리 존재 여부 확인
-    const category = await findCategoryById(categoryId);
+    const category = await findCategoryById(categoryId, portfolioId);
     if (!category) {
       throw new CustomError("카테고리를 찾을 수 없습니다.", 404);
     }

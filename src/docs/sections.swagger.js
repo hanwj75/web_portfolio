@@ -15,12 +15,6 @@
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: header
- *         name: x-portfolio-id
- *         required: true
- *         schema:
- *           type: string
- *         description: 포트폴리오 UUID
  *       - in: path
  *         name: portfolioId
  *         required: true
@@ -75,7 +69,7 @@
 
 /**
  * @swagger
- * /api/portfolios/categories/{categoryId}/sections:
+ * /api/portfolios/{portfolioId}/categories/{categoryId}/sections:
  *   get:
  *     summary: 카테고리별 섹션 조회
  *     description: 특정 카테고리에 속한 모든 섹션을 조회합니다.
@@ -87,6 +81,12 @@
  *         schema:
  *           type: string
  *         description: 카테고리 ID
+ *       - in: path
+ *         name: portfolioId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 포트폴리오 ID
  *     responses:
  *       200:
  *         description: 섹션 조회 성공
