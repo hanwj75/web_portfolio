@@ -27,7 +27,6 @@ export const DEFAULT_SECTIONS = [
 
   //카테고리 타입 project 섹션 템플릿
   {
-    categoryId: "카테고리-UUID",
     content: {
       contentTitle: "UIUX Project",
       description: "스스로 시작한 다양한 프로젝트를 모았습니다.",
@@ -39,6 +38,7 @@ export const DEFAULT_SECTIONS = [
           date: "2025.02 ~ 2025.07",
           stacks: [{ stackName: "Figma", stackLogo: "/file.svg" }],
           projectImage: { src: "/asset/image/Logo_Image.png" },
+          projectLink: "https://www.naver.com",
           Participation: 54,
         },
       ],
@@ -47,7 +47,6 @@ export const DEFAULT_SECTIONS = [
 
   //카테고리 타입 profile 섹션 템플릿
   {
-    categoryId: "카테고리-UUID",
     content: {
       contentTitle: "kim yurim Designer PORTFOLIO",
       shortIntro: "안녕하세요. 사용자와 함께 성장하는 프로덕트 디자이너, 김유림 입니다.",
@@ -170,7 +169,6 @@ export const DEFAULT_SECTIONS = [
 ];
 
 // {
-//   "categoryId": "카테고리-UUID",
 //   "content": {
 //     "contentTitle": "UIUX Project",
 //     "description": "스스로 시작한 다양한 프로젝트를 모았습니다.",
@@ -184,6 +182,7 @@ export const DEFAULT_SECTIONS = [
 //           { "stackName": "Figma", "stackLogo": "/file.svg" }
 //         ],
 //         "projectImage": { "src": "/asset/image/Logo_Image.png" },
+//         "projectLink": "https://www.naver.com",
 //         "Participation": 54
 //       }
 //     ]
@@ -193,7 +192,6 @@ export const DEFAULT_SECTIONS = [
 //카테고리 타입 Profile 섹션 템플릿
 
 // {
-//   "categoryId": "카테고리-UUID",
 //   "content": {
 //     "contentTitle": "kim yurim Designer PORTFOLIO",
 //     "shortIntro": "안녕하세요. 사용자와 함께 성장하는 프로덕트 디자이너, 김유림 입니다.",
