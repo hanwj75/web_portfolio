@@ -69,9 +69,9 @@ router.post("/portfolios/draft/save", jwtMiddleware, savePortfolioDraft);
  * @body
  * {"title":"포트폴리오 제목"}
  */
-router.patch("/portfolios", jwtMiddleware, async (req, res, next) => {
+router.patch("/portfolios/:portfolioId", jwtMiddleware, async (req, res, next) => {
   try {
-    const portfolioId = req.headers["x-portfolio-id"];
+    const { portfolioId } = req.params;
     const { id: userId } = req.user;
     const { title } = req.body;
     if (!title) {
@@ -108,7 +108,7 @@ router.patch("/portfolios", jwtMiddleware, async (req, res, next) => {
 /**
  * @desc 현재 사용자 포트폴리오 목록 조회
  */
-router.get("/portfolios", jwtMiddleware, async (req, res, next) => {
+router.get("/portfolios", async (req, res, next) => {
   try {
     const { id: userId } = req.user;
 
@@ -124,7 +124,7 @@ router.get("/portfolios", jwtMiddleware, async (req, res, next) => {
 });
 
 /**
- * @desc 포트폴리오 전체 조회(비 로그인)
+ * @desc 포트폴리오 전체 조회(배포된 URL)
  */
 router.get("/portfolios/:publicUrlId", async (req, res, next) => {
   try {
@@ -206,9 +206,9 @@ router.get("/portfolios/:publicUrlId/categories/order/:sortOrder", async (req, r
 /**
  * @desc 포트폴리오 공개 설정
  */
-router.patch("/portfolios/deploy", jwtMiddleware, async (req, res, next) => {
+router.patch("/portfolios/:portfolioId/deploy", jwtMiddleware, async (req, res, next) => {
   try {
-    const portfolioId = req.headers["x-portfolio-id"];
+    const { portfolioId } = req.params;
     const { id: userId } = req.user;
 
     if (!portfolioId) {
@@ -237,9 +237,9 @@ router.patch("/portfolios/deploy", jwtMiddleware, async (req, res, next) => {
 /**
  * @desc 포트폴리오 비공개 설정
  */
-router.patch("/portfolios/undeploy", jwtMiddleware, async (req, res, next) => {
+router.patch("/portfolios/:portfolioId/undeploy", jwtMiddleware, async (req, res, next) => {
   try {
-    const portfolioId = req.headers["x-portfolio-id"];
+    const { portfolioId } = req.params;
     const { id: userId } = req.user;
 
     if (!portfolioId) {
